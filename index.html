@@ -1,983 +1,1985 @@
 <!DOCTYPE html>
-<html lang="es" class="h-full scroll-smooth">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Proyecto ProTrainer - Presentación Ejecutiva Gerencial</title>
+    <title>PENKY SHOP | Catálogo Oficial de Calzado</title>
+    
+    <!-- 1. LIBRERÍA ESTÁTICA -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    
+    <!-- 2. MOTOR MODERNO DE TAILWIND -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- 3. CONFIGURACIÓN DE COLORES -->
     <script>
-        tailwind.config = {
-            darkMode: 'class',
+        window.tailwind = window.tailwind || {};
+        window.tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-                    },
                     colors: {
-                        slate: {
-                            850: '#151f32',
-                            900: '#0f172a',
-                            950: '#020617',
-                        },
-                        cyan: {
-                            400: '#22d3ee',
-                            500: '#06b6d4',
-                            600: '#0891b2',
-                        },
-                    },
-                    animation: {
-                        'pulse-glow': 'pulseGlow 3s infinite ease-in-out',
-                        'float': 'float 6s ease-in-out infinite',
-                    },
-                    keyframes: {
-                        pulseGlow: {
-                            '0%, 100%': { opacity: '0.4', transform: 'scale(1)' },
-                            '50%': { opacity: '0.8', transform: 'scale(1.03)' },
-                        },
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0px)' },
-                            '50%': { transform: 'translateY(-8px)' },
+                        penky: {
+                            navy: '#091E34',
+                            blue: '#103459',
+                            orange: '#FF6B00',
+                            orangeLight: '#FF8800',
+                            bg: '#F4F7FA'
                         }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        urban: ['Teko', 'sans-serif'],
                     }
                 }
             }
         }
     </script>
+
+    <!-- 4. FUENTES E ÍCONOS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Teko:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- 5. SDK DE FIREBASE -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+
+    <!-- 6. ESTILOS Y POSICIONAMIENTO ABSOLUTO CONTROLADO -->
     <style>
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #020617;
-            color: #f8fafc;
-            overflow: hidden;
+        :root {
+            --penky-navy: #091E34;
+            --penky-blue: #103459;
+            --penky-orange: #FF6B00;
+            --penky-bg: #F4F7FA;
+            --whatsapp-green: #25D366;
         }
         
-        .slide {
-            display: none;
-            opacity: 0;
-            transform: translateY(12px) scale(0.99);
-            transition: opacity 0.4s ease, transform 0.4s ease;
-        }
+        .bg-penky-navy { background-color: var(--penky-navy) !important; }
+        .bg-penky-blue { background-color: var(--penky-blue) !important; }
+        .bg-penky-orange { background-color: var(--penky-orange) !important; }
+        .bg-penky-bg { background-color: var(--penky-bg) !important; }
+        .bg-whatsapp { background-color: var(--whatsapp-green) !important; }
         
-        .slide.active {
-            display: flex;
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
+        .text-penky-navy { color: var(--penky-navy) !important; }
+        .text-penky-orange { color: var(--penky-orange) !important; }
+        .text-whatsapp { color: var(--whatsapp-green) !important; }
+        
+        .border-penky-orange { border-color: var(--penky-orange) !important; }
+        .border-whatsapp { border-color: var(--whatsapp-green) !important; }
+        
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .shoe-card { transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+        .shoe-card:hover { transform: translateY(-6px); }
 
-        .glass-panel {
-            background: rgba(15, 23, 42, 0.75);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(56, 189, 248, 0.15);
+        @keyframes bounce-slow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
         }
-
-        .glass-card {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.8) 100%);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .glass-card:hover {
-            border-color: rgba(6, 182, 212, 0.4);
-            box-shadow: 0 10px 30px -10px rgba(6, 182, 212, 0.25);
-            transform: translateY(-3px);
-        }
-
-        .glow-effect {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0f172a;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #334155;
-            border-radius: 9999px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #06b6d4;
+        .animate-bounce-slow {
+            animation: bounce-slow 3s infinite ease-in-out;
         }
     </style>
 </head>
-<body class="h-screen w-screen flex flex-col justify-between select-none bg-slate-950 text-slate-100 relative overflow-hidden">
+<body class="bg-penky-bg text-slate-800 font-sans antialiased selection:bg-penky-orange selection:text-white">
 
-    <!-- Background Ambient Glows -->
-    <div class="glow-effect w-96 h-96 bg-cyan-600/20 -top-20 -left-20 animation-pulse-glow"></div>
-    <div class="glow-effect w-[30rem] h-[30rem] bg-blue-600/15 -bottom-20 -right-20 animation-pulse-glow" style="animation-delay: 1.5s;"></div>
-    <div class="glow-effect w-80 h-80 bg-indigo-600/10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+    <!-- ============================================== -->
+    <!-- TIENDA PÚBLICA (VISTA DE CLIENTES)             -->
+    <!-- ============================================== -->
+    <!-- Contenedor principal con position: relative para anclar el botón de WhatsApp -->
+    <div id="vistaTiendaPublica" class="min-h-screen flex flex-col justify-between relative">
 
-    <!-- Top Bar Navigation -->
-    <header class="relative z-20 w-full px-6 py-4 flex items-center justify-between border-b border-slate-800/80 glass-panel">
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
-                <i data-lucide="youtube" class="w-5 h-5 text-white"></i>
-            </div>
-            <div>
-                <div class="flex items-center gap-2">
-                    <span class="font-extrabold text-lg tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-cyan-400">PROTRAINER</span>
-                    <span class="text-xs px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-semibold">PRESENTACIÓN GERENCIAL</span>
-                </div>
-                <p class="text-xs text-slate-400">Capacitación Técnica, Unboxing & Reseñas</p>
-            </div>
-        </div>
-
-        <!-- Slide Indicators & Controls -->
-        <div class="flex items-center gap-4">
-            <div class="hidden md:flex items-center gap-2 bg-slate-900/80 px-3 py-1.5 rounded-lg border border-slate-800 text-xs text-slate-400">
-                <span id="current-slide-num" class="font-bold text-cyan-400">1</span>
-                <span>/</span>
-                <span id="total-slides-num">8</span>
+        <div>
+            <!-- CINTA SUPERIOR PROMOCIONAL -->
+            <div class="bg-penky-orange text-white text-xs sm:text-sm font-bold py-2 px-4 text-center tracking-wide shadow-sm">
+                <i class="fa-solid fa-fire-flame-curved mr-1"></i> 
+                ¡LLEVA TUS TENIS A CRÉDITO EN 3 CUOTAS QUINCENALES O PAGO DE CONTADO!
             </div>
 
-            <!-- YouTube Quick Link Modal Trigger -->
-            <button onclick="openYouTubeModal()" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-red-600/15 hover:bg-red-600/25 border border-red-500/30 text-red-400 hover:text-red-300 text-xs font-semibold transition-all">
-                <i data-lucide="link" class="w-3.5 h-3.5"></i>
-                <span class="hidden sm:inline">Link del Canal</span>
-            </button>
-
-            <!-- Fullscreen Toggle -->
-            <button onclick="toggleFullScreen()" class="p-2 rounded-lg bg-slate-800/60 hover:bg-slate-700 text-slate-300 transition-all" title="Pantalla Completa (F)">
-                <i data-lucide="maximize" class="w-4 h-4"></i>
-            </button>
-        </div>
-    </header>
-
-    <!-- Progress Bar -->
-    <div class="w-full bg-slate-900 h-1 relative z-20">
-        <div id="progress-bar" class="h-full bg-gradient-to-r from-cyan-500 to-blue-500 transition-all duration-300 w-1/8"></div>
-    </div>
-
-    <!-- MAIN PRESENTATION CONTAINER -->
-    <main class="relative z-10 flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 flex items-center justify-center overflow-y-auto">
-        
-        <!-- ================= SLIDE 1: PORTADA EJECUTIVA ================= -->
-        <section class="slide active w-full flex-col justify-center items-center text-center space-y-8 py-6">
-            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-transparent border border-cyan-500/30 text-cyan-300 text-xs md:text-sm font-semibold tracking-wide uppercase shadow-inner">
-                <i data-lucide="sparkles" class="w-4 h-4 text-cyan-400"></i>
-                Lanzamiento Estratégico de Canal Visual de Capacitación
-            </div>
-
-            <div class="space-y-4 max-w-4xl">
-                <h1 class="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-white leading-tight">
-                    PROYECTO <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-sky-300 to-blue-500">PRO-TRAINER</span>
-                </h1>
-                <p class="text-lg sm:text-2xl text-slate-300 font-light max-w-3xl mx-auto leading-relaxed">
-                    Estrategia audiovisual de alta precisión para <span class="text-cyan-400 font-medium">capacitación técnica</span>, <span class="text-sky-300 font-medium">unboxing</span> y <span class="text-blue-400 font-medium">argumentación comercial</span>.
-                </p>
-            </div>
-
-            <!-- Highlights Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-3xl pt-4">
-                <div class="glass-card p-4 rounded-xl text-center space-y-1">
-                    <div class="text-emerald-400 font-bold text-xl flex items-center justify-center gap-1">
-                        <i data-lucide="circle-dollar-sign" class="w-5 h-5"></i> COSTO $0
-                    </div>
-                    <p class="text-xs text-slate-400">Inversión Inicial en Equipamiento para la Empresa</p>
-                </div>
-                <div class="glass-card p-4 rounded-xl text-center space-y-1">
-                    <div class="text-cyan-400 font-bold text-xl flex items-center justify-center gap-1">
-                        <i data-lucide="zap" class="w-5 h-5"></i> 100% LISTO
-                    </div>
-                    <p class="text-xs text-slate-400">Setup de Grabación Propio & Operativo Hoy</p>
-                </div>
-                <div class="glass-card p-4 rounded-xl text-center space-y-1">
-                    <div class="text-sky-400 font-bold text-xl flex items-center justify-center gap-1">
-                        <i data-lucide="target" class="w-5 h-5"></i> DOBLE IMPACTO
-                    </div>
-                    <p class="text-xs text-slate-400">Fuerza de Ventas + Cliente Final</p>
-                </div>
-            </div>
-
-            <!-- YouTube Channel Link Widget -->
-            <div class="glass-panel p-4 rounded-2xl w-full max-w-2xl border border-slate-700/60 shadow-2xl space-y-3">
-                <div class="flex items-center justify-between text-xs text-slate-400 px-1">
-                    <span class="flex items-center gap-1.5 font-medium"><i data-lucide="youtube" class="w-4 h-4 text-red-500"></i> Canal de YouTube ProTrainer</span>
-                    <span class="text-slate-500">Haz clic para editar o copiar</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <input type="text" id="youtube-url-input-s1" class="flex-1 bg-slate-900/90 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-cyan-300 font-mono focus:outline-none focus:border-cyan-500 transition-all" value="https://www.youtube.com/@ProTrainer_Oficial" placeholder="Pega aquí el enlace de tu canal de YouTube...">
-                    <button onclick="copyChannelUrl('youtube-url-input-s1')" class="px-4 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs flex items-center gap-2 transition-all shadow-lg shadow-cyan-500/20 active:scale-95">
-                        <i data-lucide="copy" class="w-4 h-4"></i> Copiar Link
-                    </button>
-                    <a id="youtube-url-btn-s1" href="https://youtube.com/@ProTrainer_Oficial" target="_blank" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs flex items-center gap-2 border border-slate-700 transition-all">
-                        <i data-lucide="external-link" class="w-4 h-4"></i> Abrir
+            <!-- CABECERA / NAVBAR PRINCIPAL -->
+            <header class="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-md">
+                <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+                    
+                    <a href="javascript:void(0)" onclick="navegarA('nosotros')" class="flex items-center gap-3 group">
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white p-1 shadow-md border-2 border-penky-orange overflow-hidden flex items-center justify-center shrink-0">
+                            <img src="logo.jpg" alt="PENKY SHOP" class="w-full h-full object-contain" onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\'text-2xl\'>🐧</span>';">
+                        </div>
+                        <div>
+                            <span class="font-urban text-3xl sm:text-4xl tracking-wider text-[#091E34] leading-none block">
+                                PENKY <span class="text-penky-orange">SHOP</span>
+                            </span>
+                            <span class="text-[11px] text-slate-500 font-semibold tracking-widest uppercase block -mt-1">
+                                Urban Sneaker Store
+                            </span>
+                        </div>
                     </a>
-                </div>
-            </div>
 
-            <div class="text-xs text-slate-500 pt-2 flex items-center gap-2">
-                <span>Presentado a: <strong class="text-slate-300">Gerencia De Entrenamiento y Dirección Comercial</strong></span>
-                <span>•</span>
-                <span>Iniciativa Propia</span>
-            </div>
-        </section>
-
-        <!-- ================= SLIDE 2: EL PROPÓSITO Y LA OPORTUNIDAD ================= -->
-        <section class="slide w-full flex-col justify-center space-y-6 py-4">
-            <div class="space-y-2 text-center sm:text-left">
-                <span class="text-xs font-bold tracking-widest text-cyan-400 uppercase">Contexto y Motivación</span>
-                <h2 class="text-3xl sm:text-4xl font-extrabold text-white">El Propósito y la Oportunidad Estratégica</h2>
-                <p class="text-sm text-slate-400">Capitalizando el conocimiento técnico profundo para potenciar el motor comercial de la empresa.</p>
-            </div>
-
-            <!-- Central Message Banner -->
-            <div class="p-6 rounded-2xl bg-gradient-to-r from-cyan-950/60 via-slate-900 to-slate-900 border-l-4 border-cyan-400 glass-panel shadow-xl">
-                <div class="flex items-start gap-4">
-                    <div class="p-3 rounded-xl bg-cyan-500/10 text-cyan-400 hidden sm:block">
-                        <i data-lucide="lightbulb" class="w-7 h-7"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-xs uppercase tracking-wider text-cyan-400 font-bold mb-1">Mensaje Central del Proyecto</h3>
-                        <p class="text-base sm:text-lg text-slate-200 font-medium leading-relaxed">
-                            "Transformar el conocimiento técnico especializado en un <span class="text-cyan-300 font-bold underline decoration-cyan-500/50">activo comercial dinámico</span>, visual y escalable, generando impacto directo tanto en la preparación interna de los asesores como en la decisión de compra del cliente final."
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Two Opportunity Pillars -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
-                <!-- Internal Pillar -->
-                <div class="glass-card p-6 rounded-2xl space-y-4">
-                    <div class="flex items-center gap-3">
-                        <div class="p-3 rounded-xl bg-blue-500/15 text-blue-400">
-                            <i data-lucide="users" class="w-6 h-6"></i>
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-white text-lg">Capacitación Comercial Interna</h4>
-                            <p class="text-xs text-slate-400">Capacitación ágil, estandarizada e interactiva</p>
-                        </div>
-                    </div>
-                    <ul class="space-y-2.5 text-sm text-slate-300">
-                        <li class="flex items-start gap-2">
-                            <i data-lucide="check-circle-2" class="w-4 h-4 text-cyan-400 shrink-0 mt-0.5"></i>
-                            <span>Reducción de curva de aprendizaje en **onboarding** de nuevos asesores comerciales.</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <i data-lucide="check-circle-2" class="w-4 h-4 text-cyan-400 shrink-0 mt-0.5"></i>
-                            <span>Acceso 24/7 a cápsulas didácticas sobre specs, configuraciones y diferenciadores.</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <i data-lucide="check-circle-2" class="w-4 h-4 text-cyan-400 shrink-0 mt-0.5"></i>
-                            <span>Unificación del argumento de venta para erradicar inconsistencias técnicas.</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- External Pillar -->
-                <div class="glass-card p-6 rounded-2xl space-y-4">
-                    <div class="flex items-center gap-3">
-                        <div class="p-3 rounded-xl bg-cyan-500/15 text-cyan-400">
-                            <i data-lucide="shield-check" class="w-6 h-6"></i>
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-white text-lg">Atracción & Confianza del Cliente</h4>
-                            <p class="text-xs text-slate-400">Autoridad de marca y transparencia técnica</p>
-                        </div>
-                    </div>
-                    <ul class="space-y-2.5 text-sm text-slate-300">
-                        <li class="flex items-start gap-2">
-                            <i data-lucide="check-circle-2" class="w-4 h-4 text-cyan-400 shrink-0 mt-0.5"></i>
-                            <span>Generación de certidumbre en el consumidor mediante pruebas reales y objetivas.</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <i data-lucide="check-circle-2" class="w-4 h-4 text-cyan-400 shrink-0 mt-0.5"></i>
-                            <span>Posicionamiento de la empresa como referencia experta en tecnología en YouTube.</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <i data-lucide="check-circle-2" class="w-4 h-4 text-cyan-400 shrink-0 mt-0.5"></i>
-                            <span>Conversión orgánica de espectadores informados a compradores decididos.</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <!-- ================= SLIDE 3: PILARES DE CONTENIDO ================= -->
-        <section class="slide w-full flex-col justify-center space-y-6 py-4">
-            <div class="space-y-2 text-center sm:text-left">
-                <span class="text-xs font-bold tracking-widest text-cyan-400 uppercase">Estructura Editorial</span>
-                <h2 class="text-3xl sm:text-4xl font-extrabold text-white">3 Pilares Estratégicos de Contenido</h2>
-                <p class="text-sm text-slate-400">Formato especializado diseñado para entretener, educar y acelerar la venta.</p>
-            </div>
-
-            <!-- 4 Tile Cards Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                
-                <!-- Tile 1 -->
-                <div class="glass-card p-5 rounded-2xl flex flex-col justify-between space-y-4 relative overflow-hidden group">
-                    <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-cyan-500/10 rounded-full blur-xl group-hover:bg-cyan-500/20 transition-all"></div>
-                    <div class="space-y-3">
-                        <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
-                            <i data-lucide="package-open" class="w-6 h-6"></i>
-                        </div>
-                        <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-slate-800 text-slate-400">Pilar 01</span>
-                        <h3 class="font-bold text-lg text-white group-hover:text-cyan-300 transition-colors">Unboxing Profesional</h3>
-                        <p class="text-xs text-slate-300 leading-relaxed">
-                            Apertura de empaque técnica y detallada. Enfoque en calidad de construcción, accesorios incluidos, estética y primeras sensaciones de producto.
-                        </p>
-                    </div>
-                    <div class="pt-2 border-t border-slate-800 text-xs text-cyan-400/90 font-medium flex items-center gap-1">
-                        <i data-lucide="eye" class="w-3.5 h-3.5"></i> Experiencia Sensorial Premium
-                    </div>
-                </div>
-
-                <!-- Tile 2 -->
-                <div class="glass-card p-5 rounded-2xl flex flex-col justify-between space-y-4 relative overflow-hidden group">
-                    <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-blue-500/10 rounded-full blur-xl group-hover:bg-blue-500/20 transition-all"></div>
-                    <div class="space-y-3">
-                        <div class="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400">
-                            <i data-lucide="sliders" class="w-6 h-6"></i>
-                        </div>
-                        <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-slate-800 text-slate-400">Pilar 02</span>
-                        <h3 class="font-bold text-lg text-white group-hover:text-blue-300 transition-colors">Reviews & Reseñas</h3>
-                        <p class="text-xs text-slate-300 leading-relaxed">
-                            Análisis riguroso de rendimiento, usabilidad en escenarios reales, autonomía, software y puntos fuertes vs áreas de oportunidad.
-                        </p>
-                    </div>
-                    <div class="pt-2 border-t border-slate-800 text-xs text-blue-400/90 font-medium flex items-center gap-1">
-                        <i data-lucide="check-check" class="w-3.5 h-3.5"></i> Evaluación Transparente
-                    </div>
-                </div>
-
-                <!-- Tile 3 -->
-                <div class="glass-card p-5 rounded-2xl flex flex-col justify-between space-y-4 relative overflow-hidden group">
-                    <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-sky-500/10 rounded-full blur-xl group-hover:bg-sky-500/20 transition-all"></div>
-                    <div class="space-y-3">
-                        <div class="w-12 h-12 rounded-xl bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-sky-400">
-                            <i data-lucide="swords" class="w-6 h-6"></i>
-                        </div>
-                        <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-slate-800 text-slate-400">Pilar 04</span>
-                        <h3 class="font-bold text-lg text-white group-hover:text-indigo-300 transition-colors">Explicación Técnica</h3>
-                        <p class="text-xs text-slate-300 leading-relaxed">
-                            Píldoras didácticas de 2 a 4 minutos traduciendo tecnicismos complejos (procesadores, pantallas, codecs) a lenguaje comercial sencillo.
-                        </p>
-                    </div>
-                    <div class="pt-2 border-t border-slate-800 text-xs text-indigo-400/90 font-medium flex items-center gap-1">
-                        <i data-lucide="sparkle" class="w-3.5 h-3.5"></i> Didáctica Comercial Sencilla
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- ================= SLIDE 4: PROPUESTA DE VALOR ================= -->
-        <section class="slide w-full flex-col justify-center space-y-6 py-4">
-            <div class="space-y-2 text-center sm:text-left">
-                <span class="text-xs font-bold tracking-widest text-cyan-400 uppercase">Retorno Estratégico</span>
-                <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Propuesta de Valor para la Empresa</h2>
-                <p class="text-sm text-slate-400">Un ecosistema audiovisual que fortalece dos frentes vitales del negocio.</p>
-            </div>
-
-            <!-- 2-Column Comparison Layout -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                
-                <!-- Column 1: Internal Impact -->
-                <div class="glass-card p-6 rounded-2xl border-t-4 border-t-cyan-500 space-y-5">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-300 flex items-center justify-center font-bold">
-                                <i data-lucide="trending-up" class="w-5 h-5"></i>
-                            </div>
-                            <div>
-                                <h3 class="font-bold text-white text-lg">Impacto Comercial Interno</h3>
-                                <p class="text-xs text-slate-400">Optimización de la Fuerza de Ventas</p>
-                            </div>
-                        </div>
-                        <span class="text-xs bg-cyan-500/10 text-cyan-400 px-2.5 py-1 rounded-full border border-cyan-500/20 font-semibold">INTERNO</span>
-                    </div>
-
-                    <div class="space-y-3 pt-2">
-                        <div class="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1">
-                            <div class="font-semibold text-slate-200 text-sm flex items-center gap-2">
-                                <i data-lucide="zap" class="w-4 h-4 text-cyan-400"></i> Agilidad en Onboarding
-                            </div>
-                            <p class="text-xs text-slate-400 pl-6">Nuevos asesores absorben el portafolio en días en lugar de semanas mediante módulos visuales.</p>
-                        </div>
-
-                        <div class="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1">
-                            <div class="font-semibold text-slate-200 text-sm flex items-center gap-2">
-                                <i data-lucide="award" class="w-4 h-4 text-cyan-400"></i> Dominio de Argumentos Técnicos
-                            </div>
-                            <p class="text-xs text-slate-400 pl-6">El vendedor comprende el "por qué" de cada especificación y responde objeciones con seguridad.</p>
-                        </div>
-
-                        <div class="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1">
-                            <div class="font-semibold text-slate-200 text-sm flex items-center gap-2">
-                                <i data-lucide="layers" class="w-4 h-4 text-cyan-400"></i> Estandarización del Speech
-                            </div>
-                            <p class="text-xs text-slate-400 pl-6">Todo el equipo transmite la misma propuesta de valor homologada y pulida.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Column 2: External Impact -->
-                <div class="glass-card p-6 rounded-2xl border-t-4 border-t-blue-500 space-y-5">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-300 flex items-center justify-center font-bold">
-                                <i data-lucide="globe" class="w-5 h-5"></i>
-                            </div>
-                            <div>
-                                <h3 class="font-bold text-white text-lg">Impacto en Cliente Final</h3>
-                                <p class="text-xs text-slate-400">Atracción y Posicionamiento de Mercado</p>
-                            </div>
-                        </div>
-                        <span class="text-xs bg-blue-500/10 text-blue-400 px-2.5 py-1 rounded-full border border-blue-500/20 font-semibold">EXTERNO</span>
-                    </div>
-
-                    <div class="space-y-3 pt-2">
-                        <div class="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1">
-                            <div class="font-semibold text-slate-200 text-sm flex items-center gap-2">
-                                <i data-lucide="check-square" class="w-4 h-4 text-blue-400"></i> Decisión de Compra Informada
-                            </div>
-                            <p class="text-xs text-slate-400 pl-6">El cliente visualiza el producto real en uso antes de la compra, reduciendo fricciones y dudas.</p>
-                        </div>
-
-                        <div class="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1">
-                            <div class="font-semibold text-slate-200 text-sm flex items-center gap-2">
-                                <i data-lucide="crown" class="w-4 h-4 text-blue-400"></i> Autoridad de Marca en Tecnología
-                            </div>
-                            <p class="text-xs text-slate-400 pl-6">Posiciona a la compañía como experta indiscutible en el nicho tecnológico visual.</p>
-                        </div>
-
-                        <div class="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1">
-                            <div class="font-semibold text-slate-200 text-sm flex items-center gap-2">
-                                <i data-lucide="heart-handshake" class="w-4 h-4 text-blue-400"></i> Fidelización Orgánica
-                            </div>
-                            <p class="text-xs text-slate-400 pl-6">Crea una comunidad fiel que recurre al canal antes de cada decisión tecnológica.</p>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- ================= SLIDE 5: SETUP DE GRABACIÓN ================= -->
-        <section class="slide w-full flex-col justify-center space-y-5 py-4">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div class="space-y-1">
-                    <span class="text-xs font-bold tracking-widest text-emerald-400 uppercase flex items-center gap-1.5">
-                        <i data-lucide="check-circle" class="w-4 h-4"></i> Operatividad Total
-                    </span>
-                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Setup de Grabación Pro</h2>
-                </div>
-                <div class="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-500/20 via-slate-900 to-slate-900 border border-emerald-500/40 text-emerald-300 font-extrabold text-sm flex items-center gap-3 shadow-lg shadow-emerald-950/30">
-                    <i data-lucide="shield-check" class="w-6 h-6 text-emerald-400"></i>
-                    <div>
-                        <div>INVERSIÓN EN EQUIPAMIENTO: $0</div>
-                        <div class="text-[10px] text-slate-400 font-normal">Cero gasto inicial para la empresa</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Narrative Box -->
-            <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 text-xs sm:text-sm text-slate-300">
-                <strong class="text-cyan-400">Iniciativa Propia de Alto Valor:</strong> Todo el set de grabación fue concebido, diseñado, ensamblado y financiado de manera independiente previo a esta presentación. La empresa cuenta con <strong class="text-white">viabilidad técnica inmediata</strong> sin requerir asignación presupuestal inicial.
-            </div>
-
-            <!-- Set Photos Showcase Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                
-                <!-- Set Image 1 -->
-                <div class="glass-card rounded-2xl overflow-hidden group cursor-pointer relative" onclick="openLightbox('WhatsApp Image 2026-07-21 at 6.56.48 PM (1).jpeg', 'Estación de Trabajo & Proyección Multicanal')">
-                    <div class="aspect-video bg-slate-950 relative overflow-hidden">
-                        <img src="WhatsApp Image 2026-07-21 at 6.56.48 PM (1).jpeg" alt="Set de Grabación Principal" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null; this.src='https://placehold.co/600x400/0f172a/06b6d4?text=Set+de+Grabacion+Principal';">
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-80"></div>
-                        <div class="absolute bottom-3 left-3 right-3 flex justify-between items-end">
-                            <div>
-                                <span class="text-[10px] font-bold text-cyan-400 bg-slate-900/90 px-2 py-0.5 rounded border border-cyan-500/30">ESTUDIO PRINCIPAL</span>
-                                <p class="text-xs font-semibold text-white mt-1">Doble Monitor & Proyector</p>
-                            </div>
-                            <i data-lucide="zoom-in" class="w-4 h-4 text-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Set Image 2 -->
-                <div class="glass-card rounded-2xl overflow-hidden group cursor-pointer relative" onclick="openLightbox('WhatsApp Image 2026-07-21 at 6.56.46 PM (1).jpeg', 'Workspace Técnico de Edición y Producción')">
-                    <div class="aspect-video bg-slate-950 relative overflow-hidden">
-                        <img src="WhatsApp Image 2026-07-21 at 6.56.46 PM (1).jpeg" alt="Setup Workstation" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null; this.src='https://placehold.co/600x400/0f172a/06b6d4?text=Workstation+Tecnica';">
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-80"></div>
-                        <div class="absolute bottom-3 left-3 right-3 flex justify-between items-end">
-                            <div>
-                                <span class="text-[10px] font-bold text-sky-400 bg-slate-900/90 px-2 py-0.5 rounded border border-sky-500/30">ISLA DE EDICIÓN</span>
-                                <p class="text-xs font-semibold text-white mt-1">Iluminación LED RGB & Audio</p>
-                            </div>
-                            <i data-lucide="zoom-in" class="w-4 h-4 text-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Set Image 3 -->
-                <div class="glass-card rounded-2xl overflow-hidden group cursor-pointer relative sm:col-span-2 md:col-span-1" onclick="openLightbox('WhatsApp Image 2026-07-21 at 6.56.47 PM (3).jpeg', 'Lounge Set para Reseñas y Tomas de Conversación')">
-                    <div class="aspect-video bg-slate-950 relative overflow-hidden">
-                        <img src="WhatsApp Image 2026-07-21 at 6.56.47 PM (3).jpeg" alt="Lounge Set de Grabación" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null; this.src='https://placehold.co/600x400/0f172a/06b6d4?text=Lounge+Set+Grabacion';">
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-80"></div>
-                        <div class="absolute bottom-3 left-3 right-3 flex justify-between items-end">
-                            <div>
-                                <span class="text-[10px] font-bold text-blue-400 bg-slate-900/90 px-2 py-0.5 rounded border border-blue-500/30">SET SECUNDARIO</span>
-                                <p class="text-xs font-semibold text-white mt-1">Lounge con Tripode & Tomas Pro</p>
-                            </div>
-                            <i data-lucide="zoom-in" class="w-4 h-4 text-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity"></i>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- ================= SLIDE 6: EQUIPAMIENTO Y DISPOSITIVOS ================= -->
-        <section class="slide w-full flex-col justify-center space-y-5 py-4">
-            <div class="space-y-2 text-center sm:text-left">
-                <span class="text-xs font-bold tracking-widest text-cyan-400 uppercase">Infraestructura & Muestras</span>
-                <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Equipamiento Integrado</h2>
-                <p class="text-sm text-slate-400">Elementos técnicos personales listos para los primeros rodajes y pruebas de producto.</p>
-            </div>
-
-            <!-- Content Grid: Tech Highlights + Equipment Images -->
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-center">
-                
-                <!-- Left: Tech Features list -->
-                <div class="md:col-span-5 space-y-3">
-                    <div class="p-4 rounded-xl glass-card border-l-4 border-l-cyan-400 space-y-1">
-                        <div class="text-xs font-bold text-cyan-400 uppercase tracking-wide">Dispositivos Clave en Muestra</div>
-                        <h3 class="font-bold text-white text-base">Stup Streamer & Periféricos</h3>
-                        <p class="text-xs text-slate-300">Equipo de mesa, terminales de video y cajas de experiencia en Dispositivos.</p>
-                    </div>
-
-                    <div class="p-4 rounded-xl glass-card border-l-4 border-l-sky-400 space-y-1">
-                        <div class="text-xs font-bold text-sky-400 uppercase tracking-wide">Accesorios</div>
-                        <h3 class="font-bold text-white text-base">Perifericos de audio & Decorativos</h3>
-                        <p class="text-xs text-slate-300">Audífonos de alta fidelidad, bases de carga y accesorios complementarios.</p>
-                    </div>
-
-                    <div class="p-4 rounded-xl glass-card border-l-4 border-l-indigo-400 space-y-1">
-                        <div class="text-xs font-bold text-indigo-400 uppercase tracking-wide">Soportes & Entorno de Grabación</div>
-                        <h3 class="font-bold text-white text-base">Sistemas de Soporte e Iluminación</h3>
-                        <p class="text-xs text-slate-300">Luz de estudio, brazos articulados, monitores secundadores y acústica acondicionada.</p>
-                    </div>
-                </div>
-
-                <!-- Right: Equipment Gallery -->
-                <div class="md:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    
-                    <div class="glass-card rounded-2xl overflow-hidden group cursor-pointer" onclick="openLightbox('WhatsApp Image 2026-07-21 at 6.56.45 PM.jpeg', 'Visualización de Specs y Unboxing de Serie GT')">
-                        <div class="aspect-square bg-slate-950 relative overflow-hidden">
-                            <img src="WhatsApp Image 2026-07-21 at 6.56.45 PM.jpeg" alt="Dispositivos GT 30 Pro" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null; this.src='https://placehold.co/500x500/0f172a/06b6d4?text=GT+30+Pro+Detail';">
-                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-80"></div>
-                            <div class="absolute bottom-3 left-3 right-3">
-                                <span class="text-[10px] font-bold text-cyan-400 bg-slate-900/90 px-2 py-0.5 rounded border border-cyan-500/30">PRODUCTO INSIGNIA</span>
-                                <p class="text-xs font-bold text-white mt-1">GT 30 Pro & UI de Specs</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="glass-card rounded-2xl overflow-hidden group cursor-pointer" onclick="openLightbox('WhatsApp Image 2026-07-21 at 6.56.46 PM.jpeg', 'Set de Entrevista y Grabación de Reseñas')">
-                        <div class="aspect-square bg-slate-950 relative overflow-hidden">
-                            <img src="WhatsApp Image 2026-07-21 at 6.56.46 PM.jpeg" alt="Set Lounge Oscuro" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null; this.src='https://placehold.co/500x500/0f172a/06b6d4?text=Set+Lounge';">
-                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-80"></div>
-                            <div class="absolute bottom-3 left-3 right-3">
-                                <span class="text-[10px] font-bold text-blue-400 bg-slate-900/90 px-2 py-0.5 rounded border border-blue-500/30">AMBIENTE LIFESTYLE</span>
-                                <p class="text-xs font-bold text-white mt-1">Set de Reseñas en Vivo</p>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-        </section>
-
-        <!-- ================= SLIDE 7: HOJA DE RUTA ================= -->
-        <section class="slide w-full flex-col justify-center space-y-6 py-4">
-            <div class="space-y-2 text-center sm:text-left">
-                <span class="text-xs font-bold tracking-widest text-cyan-400 uppercase">Plan de Ejecución</span>
-                <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Hoja de Ruta (Roadmap) de Implementación</h2>
-                <p class="text-sm text-slate-400">Despliegue estructurado por fases para asegurar calidad y adopción.</p>
-            </div>
-
-            <!-- Timeline Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 relative pt-2">
-                
-                <!-- Phase 1 -->
-                <div class="glass-card p-6 rounded-2xl space-y-4 border-t-4 border-t-cyan-500 relative">
-                    <div class="flex items-center justify-between">
-                        <span class="w-8 h-8 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-black text-sm border border-cyan-500/40">01</span>
-                        <span class="text-xs font-bold text-cyan-400 px-2 py-0.5 rounded bg-cyan-500/10">SEMANAS 1 - 2</span>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-white text-lg">Fase 1: Producción Inicial</h3>
-                        <p class="text-xs text-slate-400 mt-1">Lote piloto de contenido clave</p>
-                    </div>
-                    <ul class="space-y-2 text-xs text-slate-300">
-                        <li class="flex items-start gap-2">
-                            <i data-lucide="check" class="w-4 h-4 text-cyan-400 shrink-0 mt-0.5"></i>
-                            <span>Grabación de los primeros videos & cápsula</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <i data-lucide="check" class="w-4 h-4 text-cyan-400 shrink-0 mt-0.5"></i>
-                            <span>Edición dinámica con gráficos en pantalla y creacion de intros.</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <i data-lucide="check" class="w-4 h-4 text-cyan-400 shrink-0 mt-0.5"></i>
-                            <span>Solucion de Aprobación previa</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Phase 2 -->
-                <div class="glass-card p-6 rounded-2xl space-y-4 border-t-4 border-t-blue-500 relative">
-                    <div class="flex items-center justify-between">
-                        <span class="w-8 h-8 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center font-black text-sm border border-blue-500/40">02</span>
-                        <span class="text-xs font-bold text-blue-400 px-2 py-0.5 rounded bg-blue-500/10">SEMANAS 3 - 4</span>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-white text-lg">Fase 2: Despliegue Piloto Interno</h3>
-                        <p class="text-xs text-slate-400 mt-1">Validación con Directivos de Entrenamiento.</p>
-                    </div>
-                    <ul class="space-y-2 text-xs text-slate-300">
-                        <li class="flex items-start gap-2">
-                            <i data-lucide="check" class="w-4 h-4 text-blue-400 shrink-0 mt-0.5"></i>
-                            <span>Lanzamiento privado de cápsulas con directivos de Entrenamiento & comerciales.</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <i data-lucide="check" class="w-4 h-4 text-blue-400 shrink-0 mt-0.5"></i>
-                            <span>Recopilación de feedback directo y resolución de solicitudes.</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <i data-lucide="check" class="w-4 h-4 text-blue-400 shrink-0 mt-0.5"></i>
-                            <span>Ajustes de ritmo y síntesis de argumentos técnicos.</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Phase 3 -->
-                <div class="glass-card p-6 rounded-2xl space-y-4 border-t-4 border-t-sky-500 relative">
-                    <div class="flex items-center justify-between">
-                        <span class="w-8 h-8 rounded-full bg-sky-500/20 text-sky-400 flex items-center justify-center font-black text-sm border border-sky-500/40">03</span>
-                        <span class="text-xs font-bold text-sky-400 px-2 py-0.5 rounded bg-sky-500/10">MES 2 EN ADELANTE</span>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-white text-lg">Fase 3: Publicación Abierta</h3>
-                        <p class="text-xs text-slate-400 mt-1">Escalamiento en YouTube ProTrainer</p>
-                    </div>
-                    <ul class="space-y-2 text-xs text-slate-300">
-                        <li class="flex items-start gap-2">
-                            <i data-lucide="check" class="w-4 h-4 text-sky-400 shrink-0 mt-0.5"></i>
-                            <span>Publicación en el canal oficial de YouTube.</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <i data-lucide="check" class="w-4 h-4 text-sky-400 shrink-0 mt-0.5"></i>
-                            <span>Publicación de comparativas directas y Unboxings semanales.</span>
-                        </li>
-                        <li class="flex items-start gap-2">
-                            <i data-lucide="check" class="w-4 h-4 text-sky-400 shrink-0 mt-0.5"></i>
-                            <span>Medición de métricas de visualización, retenimiento y engagement.</span>
-                        </li>
-                    </ul>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- ================= SLIDE 8: CIERRE Y PRÓXIMOS PASOS ================= -->
-        <section class="slide w-full flex-col justify-center items-center text-center space-y-8 py-6">
-            <div class="space-y-4 max-w-3xl">
-                <span class="text-xs font-bold tracking-widest text-cyan-400 uppercase px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20">
-                    Conclusión & Acción
-                </span>
-                <h2 class="text-3xl sm:text-5xl font-extrabold text-white leading-tight">
-                    Infraestructura Lista. Conocimiento Disponible.<br>
-                    <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500">Es Momento de Iniciar.</span>
-                </h2>
-                <p class="text-slate-300 text-sm sm:text-base leading-relaxed max-w-2xl mx-auto">
-                    Contamos con el espacio, los equipos, la capacidad técnica y la viabilidad inmediata. Demos el paso para convertir nuestro conocimiento técnico en el principal catalizador de ventas de la empresa.
-                </p>
-            </div>
-
-            <!-- YouTube Channel Link Widget Final -->
-            <div class="glass-panel p-6 rounded-2xl w-full max-w-2xl border border-slate-700/80 shadow-2xl space-y-4 text-left">
-                <div class="flex items-center justify-between text-xs text-slate-400">
-                    <span class="flex items-center gap-2 font-bold text-white"><i data-lucide="youtube" class="w-5 h-5 text-red-500"></i> Enlace Directo al Canal de YouTube</span>
-                    <span class="text-cyan-400 font-semibold">Configuración Personalizada</span>
-                </div>
-
-                <div class="flex flex-col sm:flex-row items-center gap-3">
-                    <input type="text" id="youtube-url-input-s8" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-cyan-300 font-mono focus:outline-none focus:border-cyan-500 transition-all" value="https://youtube.com/@ProTrainer_Oficial" placeholder="Pega aquí el enlace oficial de YouTube...">
-                    
-                    <div class="flex gap-2 w-full sm:w-auto">
-                        <button onclick="copyChannelUrl('youtube-url-input-s8')" class="flex-1 sm:flex-none px-5 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-cyan-500/20 whitespace-nowrap active:scale-95">
-                            <i data-lucide="copy" class="w-4 h-4"></i> Copiar Link
+                    <!-- MENÚ ESCRITORIO -->
+                    <nav class="hidden lg:flex items-center gap-2 bg-slate-100 p-1.5 rounded-2xl border border-slate-200 text-xs font-extrabold uppercase tracking-wider">
+                        <button id="navBtn-nosotros" onclick="navegarA('nosotros')" class="px-4 py-2 rounded-xl transition bg-penky-navy text-white shadow-sm">
+                            <i class="fa-solid fa-shield-halved mr-1.5 text-penky-orange"></i> Quiénes Somos
                         </button>
-                        <a id="youtube-url-btn-s8" href="https://www.youtube.com/@ProTrainer_Oficial" target="_blank" class="flex-1 sm:flex-none px-5 py-3 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-lg shadow-red-600/20 whitespace-nowrap">
-                            <i data-lucide="play-circle" class="w-4 h-4"></i> Ir al Canal
-                        </a>
+                        <button id="navBtn-catalogo" onclick="navegarA('catalogo')" class="px-4 py-2 rounded-xl transition text-slate-600 hover:text-penky-navy hover:bg-white">
+                            <i class="fa-solid fa-shoe-prints mr-1.5 text-penky-orange"></i> Catálogo
+                        </button>
+                        <button id="navBtn-testimonios" onclick="navegarA('testimonios')" class="px-4 py-2 rounded-xl transition text-slate-600 hover:text-penky-navy hover:bg-white">
+                            <i class="fa-solid fa-star mr-1.5 text-penky-orange"></i> Comunidad y Opiniones
+                        </button>
+                        <button id="navBtn-cobertura" onclick="navegarA('cobertura')" class="px-4 py-2 rounded-xl transition text-slate-600 hover:text-penky-navy hover:bg-white">
+                            <i class="fa-solid fa-truck-fast mr-1.5 text-penky-orange"></i> Envíos y Ubicación
+                        </button>
+                    </nav>
+
+                    <div class="lg:hidden">
+                        <button onclick="toggleMenuMovil()" class="p-2.5 rounded-xl bg-slate-100 text-penky-navy border border-slate-200 text-lg">
+                            <i class="fa-solid fa-bars"></i>
+                        </button>
+                    </div>
+
+                </div>
+
+                <div id="menuMovilDesplegable" class="hidden lg:hidden border-t border-slate-200 bg-white px-4 py-3 space-y-2">
+                    <button onclick="navegarA('nosotros'); toggleMenuMovil();" class="w-full text-left p-3 rounded-xl font-extrabold text-sm uppercase flex items-center justify-between bg-slate-50 text-penky-navy">
+                        <span><i class="fa-solid fa-shield-halved text-penky-orange mr-2"></i> Quiénes Somos</span>
+                        <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+                    </button>
+                    <button onclick="navegarA('catalogo'); toggleMenuMovil();" class="w-full text-left p-3 rounded-xl font-extrabold text-sm uppercase flex items-center justify-between text-slate-600 hover:bg-slate-50">
+                        <span><i class="fa-solid fa-shoe-prints text-penky-orange mr-2"></i> Catálogo Oficial</span>
+                        <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+                    </button>
+                    <button onclick="navegarA('testimonios'); toggleMenuMovil();" class="w-full text-left p-3 rounded-xl font-extrabold text-sm uppercase flex items-center justify-between text-slate-600 hover:bg-slate-50">
+                        <span><i class="fa-solid fa-star text-penky-orange mr-2"></i> Comunidad y Opiniones</span>
+                        <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+                    </button>
+                    <button onclick="navegarA('cobertura'); toggleMenuMovil();" class="w-full text-left p-3 rounded-xl font-extrabold text-sm uppercase flex items-center justify-between text-slate-600 hover:bg-slate-50">
+                        <span><i class="fa-solid fa-truck-fast text-penky-orange mr-2"></i> Envíos y Ubicación</span>
+                        <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- VISTAS INDEPENDIENTES -->
+            <section id="vista-nosotros" class="seccion-vista py-8 sm:py-14">
+                <div class="max-w-7xl mx-auto px-4">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mb-12">
+                        <div class="lg:col-span-5 flex flex-col items-center">
+                            <div class="w-full max-w-sm bg-white p-6 sm:p-8 rounded-3xl shadow-xl border-2 border-slate-200 text-center relative overflow-hidden">
+                                <div class="absolute -top-16 -right-16 w-36 h-36 bg-penky-orange/15 rounded-full blur-2xl pointer-events-none"></div>
+                                <div class="w-48 h-48 sm:w-56 sm:h-56 mx-auto mb-4 rounded-3xl p-3 bg-slate-50 border border-slate-200 shadow-inner flex items-center justify-center">
+                                    <img src="logo.jpg" alt="Logo PENKY SHOP" class="w-full h-full object-contain" onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\'text-7xl\'>🐧</span>';">
+                                </div>
+                                <span class="inline-block px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-orange-50 text-penky-orange border border-orange-200 mb-2">
+                                    Original Urban Calzado
+                                </span>
+                                <h3 class="font-urban text-3xl sm:text-4xl uppercase text-penky-navy leading-none">
+                                    PENKY <span class="text-penky-orange">SHOP</span>
+                                </h3>
+                                <p class="text-xs text-slate-500 font-semibold mt-1">Bucaramanga, Santander · Despachos a Todo el País</p>
+                            </div>
+                        </div>
+
+                        <div class="lg:col-span-7">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-orange-50 text-penky-orange border border-orange-200 mb-3">
+                                <span class="w-2 h-2 rounded-full bg-penky-orange animate-ping"></span> Bienvenidos a PENKY SHOP
+                            </span>
+                            <h1 class="font-urban text-5xl sm:text-6xl uppercase leading-[0.95] tracking-wide text-penky-navy mb-4">
+                                CALZADO URBANO CON <span class="text-penky-orange">RESPALDO TOTAL</span>
+                            </h1>
+                            <p class="text-slate-600 text-sm sm:text-base leading-relaxed mb-4">
+                                En <strong>PENKY SHOP</strong> nacemos para transformar la experiencia de adquirir tenis de alta gama. Eliminamos los chats enredados llenos de 40 fotos sin orden y la incertidumbre de no saber qué talla te va a llegar.
+                            </p>
+                            <p class="text-slate-600 text-sm sm:text-base leading-relaxed mb-6">
+                                Traemos las mejores siluetas importadas de marcas icónicas como <strong>Nike, Jordan, Adidas, New Balance, Hoka, On Cloud y Louis Vuitton</strong>. Cada par cuenta con verificación previa de calidad, disponibilidad inmediata y un sistema de financiamiento transparente.
+                            </p>
+
+                            <div class="flex flex-col sm:flex-row gap-3">
+                                <button onclick="navegarA('catalogo')" class="py-4 px-8 bg-penky-navy hover:bg-penky-orange text-white font-extrabold text-sm uppercase tracking-wider rounded-2xl shadow-xl transition-all flex items-center justify-center gap-2 group">
+                                    <span>Explorar Catálogo de Tenis</span>
+                                    <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                                </button>
+                                <button onclick="navegarA('cobertura')" class="py-4 px-6 bg-white hover:bg-slate-50 text-penky-navy font-bold text-sm uppercase rounded-2xl border border-slate-200 transition text-center">
+                                    Conocer Envíos y Garantías
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 pt-6 border-t border-slate-200">
+                        <div class="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
+                            <div>
+                                <div class="w-12 h-12 rounded-2xl bg-orange-50 text-penky-orange flex items-center justify-center text-xl mb-4">
+                                    <i class="fa-solid fa-ruler-combined"></i>
+                                </div>
+                                <h4 class="font-urban text-2xl uppercase tracking-wide text-penky-navy mb-1">Talla 100% Exacta</h4>
+                                <p class="text-xs text-slate-500 leading-relaxed">
+                                    No adivinamos tallas. Te solicitamos la foto de la marquilla o lengüeta de tu calzado actual para verificar centímetros exactos y equivalencias US/EUR antes de despachar.
+                                </p>
+                            </div>
+                            <span class="text-[11px] font-bold text-penky-orange mt-4 uppercase">Cero errores de horma</span>
+                        </div>
+
+                        <div class="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
+                            <div>
+                                <div class="w-12 h-12 rounded-2xl bg-blue-50 text-penky-blue flex items-center justify-center text-xl mb-4">
+                                    <i class="fa-solid fa-handshake-simple"></i>
+                                </div>
+                                <h4 class="font-urban text-2xl uppercase tracking-wide text-penky-navy mb-1">Crédito Directo en 3 Cuotas</h4>
+                                <p class="text-xs text-slate-500 leading-relaxed">
+                                    Lleva tus referencias favoritas sin desbalancear tu bolsillo: pagas de contado ($170.000 valor base) o a crédito en 3 cuotas quincenales de $70.000 sin trámites bancarios engorrosos.
+                                </p>
+                            </div>
+                            <span class="text-[11px] font-bold text-penky-blue mt-4 uppercase">3 pagos quincenales claros</span>
+                        </div>
+
+                        <div class="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
+                            <div>
+                                <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl mb-4">
+                                    <i class="fa-solid fa-headset"></i>
+                                </div>
+                                <h4 class="font-urban text-2xl uppercase tracking-wide text-penky-navy mb-1">Atención de Socio a Cliente</h4>
+                                <p class="text-xs text-slate-500 leading-relaxed">
+                                    Somos dos socios al frente de cada proceso. Te atendemos de manera personalizada por WhatsApp para confirmar detalles, enviar fotos reales adicionales y coordinar la entrega.
+                                </p>
+                            </div>
+                            <span class="text-[11px] font-bold text-emerald-600 mt-4 uppercase">Trato directo y transparente</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="vista-catalogo" class="seccion-vista hidden py-6 sm:py-10">
+                <div class="max-w-7xl mx-auto px-4">
+                    <div class="bg-white p-4 sm:p-6 rounded-3xl border border-slate-200 shadow-sm mb-6">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                            <div>
+                                <h2 class="font-urban text-3xl sm:text-4xl uppercase tracking-wide text-penky-navy leading-none">
+                                    CATÁLOGO <span class="text-penky-orange">OFICIAL</span>
+                                </h2>
+                                <p id="contadorModelos" class="text-xs font-bold text-slate-500 mt-0.5">Sincronizando con Firebase...</p>
+                            </div>
+
+                            <div class="w-full md:w-80 relative">
+                                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                                <input type="text" id="inputBusqueda" placeholder="Buscar por modelo o marca..." class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 text-penky-navy placeholder-slate-400 border border-slate-200 focus:border-penky-orange focus:bg-white focus:outline-none text-sm transition">
+                            </div>
+                        </div>
+
+                        <div>
+                            <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 block mb-2">Filtrar por marca:</span>
+                            <div id="contenedorMarcas" class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1"></div>
+                        </div>
+                    </div>
+
+                    <div id="gridProductos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"></div>
+
+                    <div id="estadoVacio" class="hidden text-center py-16 bg-white rounded-3xl border border-slate-200 my-4 p-6 shadow-sm">
+                        <div class="w-16 h-16 bg-penky-orange/10 text-penky-orange rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">
+                            <i class="fa-solid fa-shoe-prints"></i>
+                        </div>
+                        <h3 class="text-lg font-extrabold text-penky-navy">No encontramos modelos con ese filtro</h3>
+                        <p class="text-sm text-slate-500 mt-1 mb-4">Intenta buscar otra marca o modelo.</p>
+                        <button onclick="resetearFiltros()" class="px-5 py-2.5 bg-penky-navy text-white font-bold text-sm rounded-xl hover:bg-penky-orange transition shadow-md">
+                            Ver todo el catálogo
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="vista-testimonios" class="seccion-vista hidden py-8 sm:py-14">
+                <div class="max-w-7xl mx-auto px-4">
+                    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+                        <div>
+                            <span class="inline-block px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-orange-50 text-penky-orange border border-orange-200 mb-2">
+                                Comunidad PENKY
+                            </span>
+                            <h2 class="font-urban text-4xl sm:text-5xl uppercase tracking-wide text-penky-navy leading-none">
+                                OPINIONES <span class="text-penky-orange">& ENTREGAS</span>
+                            </h2>
+                            <p class="text-slate-500 text-sm mt-1">Nuestros clientes comparten su experiencia al recibir sus zapatos.</p>
+                        </div>
+
+                        <button onclick="abrirModalNuevaOpinion()" class="py-3 px-5 bg-penky-orange hover:bg-penky-orangeLight text-white font-extrabold text-xs uppercase tracking-wider rounded-2xl shadow-md transition flex items-center justify-center gap-2 self-start md:self-auto">
+                            <i class="fa-solid fa-pen-nib"></i> Dejar mi Opinión y Foto
+                        </button>
+                    </div>
+
+                    <div id="gridOpiniones" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+                </div>
+            </section>
+
+            <section id="vista-cobertura" class="seccion-vista hidden py-8 sm:py-14">
+                <div class="max-w-7xl mx-auto px-4">
+                    <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
+                        <div class="grid grid-cols-1 md:grid-cols-2">
+                            <div class="p-6 sm:p-10 flex flex-col justify-between">
+                                <div>
+                                    <span class="inline-block px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider bg-orange-50 text-penky-orange border border-orange-200 mb-2">
+                                        Cobertura y Operación
+                                    </span>
+                                    <h2 class="font-urban text-4xl uppercase tracking-wide text-penky-navy leading-none mb-3">
+                                        UBICACIÓN <span class="text-penky-orange">& POLÍTICAS DE ENVÍO</span>
+                                    </h2>
+                                    <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                                        Operamos y despachamos desde <strong>Bucaramanga, Santander</strong> para todo el Área Metropolitana (Floridablanca, Girón, Piedecuesta) y coordinamos despachos certificados con número de guía a cualquier municipio de Colombia.
+                                    </p>
+
+                                    <div class="space-y-4 mb-6 text-sm text-slate-700">
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-8 h-8 rounded-xl bg-orange-50 text-penky-orange flex items-center justify-center shrink-0 mt-0.5">
+                                                <i class="fa-solid fa-location-dot"></i>
+                                            </div>
+                                            <div>
+                                                <h4 class="font-bold text-penky-navy text-xs uppercase">Sede de Despacho</h4>
+                                                <p class="text-xs text-slate-500">Bucaramanga, Santander, Colombia.</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-8 h-8 rounded-xl bg-blue-50 text-penky-blue flex items-center justify-center shrink-0 mt-0.5">
+                                                <i class="fa-solid fa-motorcycle"></i>
+                                            </div>
+                                            <div>
+                                                <h4 class="font-bold text-penky-navy text-xs uppercase">Entregas Locales</h4>
+                                                <p class="text-xs text-slate-500">Coordinación directa de entrega el mismo día o al día siguiente.</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="flex items-start gap-3">
+                                            <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
+                                                <i class="fa-solid fa-box-open"></i>
+                                            </div>
+                                            <div>
+                                                <h4 class="font-bold text-penky-navy text-xs uppercase">Envíos Nacionales</h4>
+                                                <p class="text-xs text-slate-500">Envíos por transportadora nacional certificada (Servientrega, Envía, Interrapidísimo).</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <a href="https://wa.me/573004658615?text=Hola%20PENKY%20SHOP,%20tengo%20una%20consulta%20sobre%20los%20envíos%20y%20modelos" target="_blank" class="inline-flex items-center justify-center gap-2 py-3.5 px-6 rounded-2xl bg-penky-navy hover:bg-penky-orange text-white font-extrabold text-xs uppercase tracking-wider transition shadow-md">
+                                    <i class="fa-brands fa-whatsapp text-base"></i>
+                                    <span>Hablar con un socio asesor ahora</span>
+                                </a>
+                            </div>
+
+                            <div class="bg-slate-50 p-6 sm:p-10 border-t md:border-t-0 md:border-l border-slate-200 flex flex-col justify-center">
+                                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                                    <h3 class="font-extrabold text-sm uppercase text-penky-navy mb-4 flex items-center gap-2">
+                                        <i class="fa-solid fa-circle-question text-penky-orange"></i> Preguntas Frecuentes
+                                    </h3>
+
+                                    <div class="space-y-4 text-xs">
+                                        <div>
+                                            <h4 class="font-bold text-slate-800">¿Cómo sé que la talla me va a servir?</h4>
+                                            <p class="text-slate-500 mt-0.5">Al adjuntar la foto de la marquilla en tu pedido, verificamos las medidas en centímetros (CM/JP) de tu calzado habitual para despacharte el equivalente exacto.</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-slate-800">¿Quién asume el valor del envío?</h4>
+                                            <p class="text-slate-500 mt-0.5">El valor del envío se coordina contigo por WhatsApp dependiendo de tu ubicación (local o nacional).</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-slate-800">¿Cómo funcionan las 3 cuotas quincenales?</h4>
+                                            <p class="text-slate-500 mt-0.5">Pagas una cuota quincenal de $70.000 (o el valor fijado en modelos especiales) mediante transferencia o efectivo acordado.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Espacio de seguridad en el fondo -->
+            <div class="h-24 pointer-events-none"></div>
+
+        </div>
+
+        <!-- PIE DE PÁGINA (Sagrado e Intocable) -->
+        <footer id="footerPrincipal" class="bg-white text-slate-500 text-xs py-8 border-t border-slate-200 z-30 relative">
+            <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-2">
+                    <span class="font-urban text-2xl text-penky-blue tracking-wider">PENKY <span class="text-penky-orange">SHOP</span></span>
+                    <span>© 2026. Tu estilo a tu alcance. Bucaramanga, Colombia.</span>
+                </div>
+                <button onclick="abrirModalAdmin()" class="text-slate-500 hover:text-penky-orange transition flex items-center gap-1.5 font-bold cursor-pointer">
+                    <i class="fa-solid fa-lock text-[11px]"></i> Acceso Socios
+                </button>
+            </div>
+        </footer>
+
+        <!-- BOTÓN FLOTANTE INTELIGENTE -->
+        <aside id="btnWhatsappFlotante" class="fixed bottom-6 right-5 sm:right-8 z-40 flex items-center gap-2 group pointer-events-auto">
+            <a href="https://wa.me/573004658615?text=¡Hola%20PENKY%20SHOP!%20🐧%20Tengo%20una%20consulta%20sobre%20el%20catálogo%20de%20tenis" 
+               target="_blank" 
+               class="hidden sm:flex items-center bg-white text-penky-navy font-extrabold text-xs py-2 px-3.5 rounded-full shadow-xl border border-slate-200 transition-all duration-300 group-hover:scale-105 group-hover:border-emerald-400">
+                <span>¿Dudas con tu talla? <strong>Escríbenos</strong></span>
+            </a>
+
+            <a href="https://wa.me/573004658615?text=¡Hola%20PENKY%20SHOP!%20🐧%20Tengo%20una%20consulta%20sobre%20el%20catálogo%20de%20tenis" 
+               target="_blank" 
+               aria-label="Contactar por WhatsApp"
+               style="background-color: #25D366 !important;"
+               class="w-14 h-14 sm:w-16 sm:h-16 rounded-full text-white shadow-2xl flex items-center justify-center text-3xl sm:text-4xl transition-all duration-300 group-hover:scale-110 active:scale-95 animate-bounce-slow relative">
+                <span class="absolute w-full h-full rounded-full bg-emerald-400/40 animate-ping pointer-events-none"></span>
+                <i class="fa-brands fa-whatsapp relative z-10"></i>
+            </a>
+        </aside>
+
+    </div> <!-- FIN VISTA TIENDA PÚBLICA -->
+
+    <!-- MODAL OPINIÓN -->
+    <div id="modalNuevaOpinion" class="fixed inset-0 bg-[#091E34]/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl w-full max-w-md shadow-2xl overflow-hidden relative max-h-[90vh] flex flex-col">
+            <div class="bg-slate-50 p-4 border-b border-slate-200 flex justify-between items-center shrink-0">
+                <h3 class="font-extrabold text-penky-navy uppercase text-sm">Tu Opinión en PENKY SHOP</h3>
+                <button onclick="cerrarModalNuevaOpinion()" class="text-slate-400 hover:text-red-500 transition"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            
+            <div class="p-5 space-y-3.5 overflow-y-auto flex-1">
+                <div>
+                    <label class="text-[11px] font-bold text-slate-500 uppercase block mb-1">Tu Nombre Completo</label>
+                    <input type="text" id="opClienteNombre" placeholder="Ej: Andrés Villamizar" class="w-full p-3 rounded-xl border border-slate-200 text-sm focus:border-penky-orange focus:outline-none bg-slate-50 font-bold">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-[11px] font-bold text-slate-500 uppercase block mb-1">Ciudad</label>
+                        <input type="text" id="opClienteCiudad" placeholder="Ej: Bucaramanga" class="w-full p-3 rounded-xl border border-slate-200 text-sm focus:border-penky-orange focus:outline-none bg-slate-50">
+                    </div>
+                    <div>
+                        <label class="text-[11px] font-bold text-slate-500 uppercase block mb-1">Zapato que compraste</label>
+                        <input type="text" id="opClienteZapato" placeholder="Ej: Jordan 4 Thunder" class="w-full p-3 rounded-xl border border-slate-200 text-sm focus:border-penky-orange focus:outline-none bg-slate-50">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-[11px] font-bold text-slate-500 uppercase block mb-1">Sube una foto (Opcional)</label>
+                    <input type="file" id="opClienteFoto" accept="image/*" class="hidden" onchange="previewFotoOpinion(event)">
+                    <button onclick="document.getElementById('opClienteFoto').click()" type="button" id="btnFotoOpinion" class="w-full p-3 border-2 border-dashed border-slate-300 rounded-xl text-slate-500 text-sm font-bold hover:bg-slate-50 hover:border-penky-blue transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-camera text-lg"></i> Adjuntar foto de tus tenis
+                    </button>
+                    <div id="previewOpinionContenedor" class="hidden mt-3 text-center">
+                        <img id="previewOpinionImg" src="" class="h-28 object-cover rounded-xl border border-slate-200 mx-auto">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-[11px] font-bold text-slate-500 uppercase block mb-1">Calificación (Estrellas)</label>
+                    <select id="opClienteEstrellas" class="w-full p-3 rounded-xl border border-slate-200 text-sm focus:border-penky-orange focus:outline-none bg-slate-50 font-bold text-amber-500">
+                        <option value="5">⭐⭐⭐⭐⭐ (5/5) Excelente experiencia</option>
+                        <option value="4">⭐⭐⭐⭐ (4/5) Muy bueno</option>
+                        <option value="3">⭐⭐⭐ (3/5) Bueno</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="text-[11px] font-bold text-slate-500 uppercase block mb-1">Tu Comentario</label>
+                    <textarea id="opClienteComentario" rows="3" placeholder="Cuéntanos cómo te quedó la talla, la atención o el calzado..." class="w-full p-3 rounded-xl border border-slate-200 text-sm focus:border-penky-orange focus:outline-none bg-slate-50"></textarea>
+                </div>
+
+                <button id="btnGuardarOpinion" onclick="guardarNuevaOpinion()" class="w-full py-3.5 bg-penky-orange hover:bg-penky-orangeLight text-white font-extrabold text-xs uppercase tracking-wider rounded-xl transition shadow-md flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-paper-plane"></i> Publicar mi Opinión
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PEDIDO -->
+    <div id="modalPedido" class="fixed inset-0 bg-[#091E34]/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 transition-opacity">
+        <div class="bg-white rounded-3xl w-full max-w-lg shadow-2xl relative flex flex-col max-h-[90vh] overflow-hidden">
+            
+            <div class="bg-slate-50 p-4 border-b border-slate-200 flex justify-between items-center shrink-0">
+                <h3 class="font-extrabold text-[#091E34]">Completar Pedido</h3>
+                <button onclick="cerrarModal()" class="text-slate-400 hover:text-red-500 transition"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            
+            <div class="p-5 overflow-y-auto flex-1">
+                <div class="flex items-center gap-4 mb-5 p-3 bg-slate-50 rounded-2xl border border-slate-100">
+                    <img id="modalImg" src="" alt="Zapato" class="w-20 h-20 object-cover rounded-xl border border-slate-200">
+                    <div>
+                        <h4 id="modalNombre" class="font-extrabold text-[#091E34] leading-tight text-sm sm:text-base"></h4>
+                        <span id="modalMarca" class="text-xs font-bold text-slate-500 uppercase"></span>
+                    </div>
+                </div>
+
+                <p class="text-xs font-bold text-slate-500 mb-2 uppercase">1. Método de Pago</p>
+                <div class="grid grid-cols-2 gap-3 mb-5">
+                    <button id="btnContado" onclick="seleccionarPago('contado')" class="relative p-3 rounded-xl border-2 border-penky-blue bg-penky-blue/5 text-left transition-all">
+                        <div id="checkContado" class="absolute top-2 right-2 text-penky-blue"><i class="fa-solid fa-circle-check"></i></div>
+                        <span class="block text-[10px] font-bold uppercase text-slate-500">Contado</span>
+                        <span id="modalPrecioContado" class="block font-extrabold text-penky-blue mt-1"></span>
+                    </button>
+                    <button id="btnCredito" onclick="seleccionarPago('credito')" class="relative p-3 rounded-xl border-2 border-slate-200 bg-white text-left transition-all">
+                        <div id="checkCredito" class="absolute top-2 right-2 text-slate-300 hidden"><i class="fa-solid fa-circle-check"></i></div>
+                        <span class="block text-[10px] font-bold uppercase text-slate-500">Crédito (3 Cuotas)</span>
+                        <span id="modalPrecioCredito" class="block font-extrabold text-penky-orange mt-1"></span>
+                    </button>
+                </div>
+
+                <p class="text-xs font-bold text-slate-500 mb-2 uppercase">2. Datos de Envío</p>
+                <div class="space-y-3 mb-5">
+                    <input type="text" id="clienteNombre" placeholder="Nombre completo" class="w-full p-3 rounded-xl border border-slate-200 text-sm focus:border-penky-blue focus:outline-none bg-slate-50">
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="tel" id="clienteTelefono" placeholder="Teléfono / WhatsApp" class="w-full p-3 rounded-xl border border-slate-200 text-sm focus:border-penky-blue focus:outline-none bg-slate-50">
+                        <input type="text" id="clienteCiudad" placeholder="Ciudad" class="w-full p-3 rounded-xl border border-slate-200 text-sm focus:border-penky-blue focus:outline-none bg-slate-50">
+                    </div>
+                    <input type="text" id="clienteDireccion" placeholder="Dirección exacta (Ej: Carrera 26 # 18 - 64)" class="w-full p-3 rounded-xl border border-slate-200 text-sm focus:border-penky-blue focus:outline-none bg-slate-50">
+                </div>
+
+                <p class="text-xs font-bold text-slate-500 mb-2 uppercase">3. Confirmar Talla</p>
+                <input type="file" id="inputFotoLengueta" accept="image/*" class="hidden" onchange="fotoSeleccionada(event)">
+                <button onclick="document.getElementById('inputFotoLengueta').click()" id="btnFoto" class="w-full p-4 border-2 border-dashed border-slate-300 rounded-xl text-slate-500 text-sm font-bold hover:bg-slate-50 hover:border-penky-blue transition flex items-center justify-center gap-2 mb-2">
+                    <i class="fa-solid fa-camera text-lg"></i> Adjuntar foto de marquilla/lengüeta
+                </button>
+
+                <div id="contenedorPreviewFoto" class="hidden items-center gap-3 p-3 bg-emerald-50 border border-emerald-200 rounded-xl mb-3">
+                    <img id="imgPreview" src="" alt="Lengüeta" class="w-14 h-14 object-cover rounded-lg border border-emerald-300 shrink-0">
+                    <div class="flex-1 text-left">
+                        <p class="text-xs font-bold text-emerald-800">Foto cargada correctamente</p>
+                        <p class="text-[11px] text-emerald-600">Al abrir WhatsApp, te recordaremos enviarla con el adjunto.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Action CTA Buttons -->
-            <div class="flex flex-wrap items-center justify-center gap-4 pt-2">
-                <button onclick="goToSlide(0)" class="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs flex items-center gap-2 border border-slate-700 transition-all">
-                    <i data-lucide="rotate-ccw" class="w-4 h-4"></i> Reiniciar Presentación
+            <div class="p-4 border-t border-slate-200 bg-slate-50 shrink-0 shadow-lg">
+                <button onclick="enviarWhatsApp()" style="background-color: #25D366 !important; color: #ffffff !important;" class="w-full py-4 font-extrabold text-base rounded-2xl shadow-md hover:opacity-90 active:scale-[0.98] transition flex items-center justify-center gap-2">
+                    <i class="fa-brands fa-whatsapp text-2xl"></i> 
+                    <span>Enviar Pedido a WhatsApp</span>
                 </button>
-                <button onclick="alert('¡Excelente! El proyecto ProTrainer está listo para dar inicio.')" class="px-8 py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 via-sky-400 to-blue-600 text-slate-950 font-black text-sm flex items-center gap-2 shadow-xl shadow-cyan-500/25 hover:opacity-95 transition-all transform hover:-translate-y-0.5 active:scale-95">
-                    <i data-lucide="check-circle" class="w-5 h-5"></i> APROBAR INICIO DE PROYECTO
-                </button>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Bottom Control Bar -->
-    <footer class="relative z-20 w-full px-6 py-3 border-t border-slate-800/80 glass-panel flex items-center justify-between">
-        <div class="flex items-center gap-2">
-            <button onclick="prevSlide()" class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed" id="btn-prev" title="Anterior (←)">
-                <i data-lucide="chevron-left" class="w-5 h-5"></i>
-            </button>
-            <button onclick="nextSlide()" class="p-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold transition-all flex items-center gap-1 shadow-md shadow-cyan-500/20" id="btn-next" title="Siguiente (→ / Espacio)">
-                <span class="text-xs font-bold pl-1 hidden sm:inline">Siguiente</span>
-                <i data-lucide="chevron-right" class="w-5 h-5"></i>
-            </button>
-        </div>
-
-        <!-- Slide Thumbnails / Indicator Dots -->
-        <div class="flex items-center gap-2" id="slide-dots-container">
-            <!-- Dots injected by JS -->
-        </div>
-
-        <!-- Keyboard Shortcuts Hint -->
-        <div class="hidden md:flex items-center gap-2 text-[11px] text-slate-500">
-            <span class="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-400 font-mono">←</span>
-            <span class="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-400 font-mono">→</span>
-            <span>Navegar</span>
-        </div>
-    </footer>
-
-    <!-- LIGHTBOX MODAL FOR IMAGES -->
-    <div id="lightbox-modal" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md hidden items-center justify-center p-4 sm:p-8" onclick="closeLightbox()">
-        <div class="relative max-w-5xl w-full glass-panel rounded-2xl overflow-hidden border border-slate-700 shadow-2xl flex flex-col max-h-[90vh]" onclick="event.stopPropagation()">
-            <div class="p-4 bg-slate-900 border-b border-slate-800 flex items-center justify-between">
-                <span id="lightbox-title" class="font-bold text-cyan-400 text-sm">Vista Previa de Equipamiento</span>
-                <button onclick="closeLightbox()" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-all">
-                    <i data-lucide="x" class="w-5 h-5"></i>
-                </button>
-            </div>
-            <div class="p-2 bg-black flex items-center justify-center overflow-hidden flex-1">
-                <img id="lightbox-img" src="" alt="Vista Previa" class="max-h-[75vh] w-auto object-contain rounded-lg">
             </div>
         </div>
     </div>
 
-    <!-- YOUTUBE LINK QUICK CONFIG MODAL -->
-    <div id="youtube-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4" onclick="closeYouTubeModal()">
-        <div class="glass-panel p-6 rounded-2xl max-w-md w-full border border-slate-700 shadow-2xl space-y-4" onclick="event.stopPropagation()">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2 text-white font-bold text-lg">
-                    <i data-lucide="youtube" class="w-6 h-6 text-red-500"></i>
-                    <span>Configurar Link del Canal</span>
+    <!-- MODAL LOGIN SOCIOS -->
+    <div id="modalAdminLogin" class="fixed inset-0 bg-[#091E34]/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl relative p-6">
+            <div class="text-center mb-6">
+                <div class="w-14 h-14 rounded-2xl bg-penky-orange/10 text-penky-orange flex items-center justify-center mx-auto mb-2 text-2xl">
+                    <i class="fa-solid fa-user-shield"></i>
                 </div>
-                <button onclick="closeYouTubeModal()" class="text-slate-400 hover:text-white">
-                    <i data-lucide="x" class="w-5 h-5"></i>
-                </button>
+                <h3 class="font-urban text-3xl uppercase tracking-wide text-penky-navy">Acceso a Socios</h3>
+                <p class="text-xs text-slate-400">Ingreso exclusivo para gestión de tienda</p>
             </div>
-            <p class="text-xs text-slate-300">Ingresa la URL oficial de tu canal de YouTube. Se actualizará en toda la presentación.</p>
-            <div class="space-y-2">
-                <label class="text-[11px] font-bold text-cyan-400 uppercase">Enlace del Canal</label>
-                <input type="text" id="youtube-modal-input" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-cyan-300 font-mono focus:outline-none focus:border-cyan-500" value="https://youtube.com/@ProTrainer_Oficial">
+
+            <div class="space-y-3 mb-6">
+                <div>
+                    <label class="text-[11px] font-bold text-slate-500 uppercase block mb-1">Usuario Socio</label>
+                    <input type="text" id="adminUsuario" placeholder="Perfil de Socio" class="w-full p-3 rounded-xl border border-slate-200 text-sm focus:border-penky-orange focus:outline-none bg-slate-50">
+                </div>
+                <div>
+                    <label class="text-[11px] font-bold text-slate-500 uppercase block mb-1">Contraseña</label>
+                    <input type="password" id="adminClave" placeholder="••••••••" class="w-full p-3 rounded-xl border border-slate-200 text-sm focus:border-penky-orange focus:outline-none bg-slate-50">
+                </div>
+                <p id="errorLogin" class="text-xs text-red-500 font-bold hidden text-center">Usuario o contraseña incorrectos.</p>
             </div>
-            <div class="flex gap-2 pt-2">
-                <button onclick="saveChannelUrlFromModal()" class="w-full py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs transition-all">
-                    Guardar y Aplicar
-                </button>
+
+            <div class="flex gap-2">
+                <button onclick="cerrarModalAdminLogin()" class="w-1/3 py-3 border border-slate-200 text-slate-500 font-bold text-xs rounded-xl hover:bg-slate-100 transition">Cancelar</button>
+                <button onclick="procesarLoginAdmin()" class="w-2/3 py-3 bg-penky-navy hover:bg-penky-orange text-white font-extrabold text-xs uppercase tracking-wider rounded-xl transition shadow-md">Ingresar</button>
             </div>
         </div>
     </div>
 
+    <!-- DASHBOARD ADMINISTRATIVO -->
+    <div id="pantallaAdminCompleta" class="fixed inset-0 z-50 bg-[#F4F7FA] overflow-y-auto flex-col hidden">
+        <header class="sticky top-0 z-40 bg-penky-navy text-white px-4 py-3 shadow-lg border-b border-white/10 shrink-0">
+            <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-white p-1 flex items-center justify-center shrink-0 border border-penky-orange overflow-hidden">
+                        <img src="logo.jpg" alt="Logo" class="w-full h-full object-contain" onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\'text-xl\'>🐧</span>';">
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-urban text-2xl tracking-wider uppercase">PENKY <span class="text-penky-orange">PANEL</span></span>
+                            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                            <span id="socioActivoNombre" class="text-[11px] font-extrabold text-penky-orange uppercase">Socio 1</span>
+                        </div>
+                        <p class="text-[10px] text-slate-300 -mt-1">Sistema Conectado a la Nube (Firebase Firestore & Storage)</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <button onclick="volverATiendaPublica()" class="py-2 px-3.5 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 border border-white/15">
+                        <i class="fa-solid fa-store"></i> Ver Tienda Pública
+                    </button>
+                    <button onclick="cerrarSesionAdmin()" class="py-2 px-3.5 bg-red-500/20 hover:bg-red-500/30 text-red-200 rounded-xl text-xs font-bold transition flex items-center gap-1.5 border border-red-500/30">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i> Salir
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="max-w-7xl mx-auto p-4 sm:p-6 w-full flex-1">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-1.5 flex gap-1 mb-6">
+                <button id="tabBtnPedidos" onclick="cambiarTabAdmin('pedidos')" class="flex-1 py-3 px-3 rounded-xl text-xs sm:text-sm font-extrabold uppercase tracking-wider transition flex items-center justify-center gap-2 bg-penky-orange text-white shadow-sm">
+                    <i class="fa-solid fa-receipt"></i>
+                    <span>Pedidos y Cuotas (<span id="adminTotalPedidos">0</span>)</span>
+                </button>
+                <button id="tabBtnInventario" onclick="cambiarTabAdmin('inventario')" class="flex-1 py-3 px-3 rounded-xl text-xs sm:text-sm font-extrabold uppercase tracking-wider transition flex items-center justify-center gap-2 text-slate-600 hover:text-penky-navy hover:bg-slate-50">
+                    <i class="fa-solid fa-boxes-stacked"></i>
+                    <span>Modelos en Catálogo (<span id="adminTotalModelos">0</span>)</span>
+                </button>
+                <button id="tabBtnSubir" onclick="cambiarTabAdmin('subir')" class="flex-1 py-3 px-3 rounded-xl text-xs sm:text-sm font-extrabold uppercase tracking-wider transition flex items-center justify-center gap-2 text-slate-600 hover:text-penky-navy hover:bg-slate-50">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <span>Cargar Referencia</span>
+                </button>
+            </div>
+
+            <div id="tabContenidoPedidos" class="space-y-4">
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <h3 class="font-extrabold text-sm sm:text-base text-penky-navy uppercase flex items-center gap-2">
+                            <i class="fa-solid fa-coins text-penky-orange"></i> Control de Despachos y Cobro Quincenal (En la Nube)
+                        </h3>
+                        <p class="text-xs text-slate-500">Cualquier cambio de estado o pago de cuota que hagas queda guardado en Firebase en tiempo real.</p>
+                    </div>
+                </div>
+                <div id="listaPedidosAdmin" class="space-y-4"></div>
+            </div>
+
+            <div id="tabContenidoInventario" class="hidden space-y-4">
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <h3 class="font-extrabold text-sm sm:text-base text-penky-navy uppercase flex items-center gap-2">
+                            <i class="fa-solid fa-shoe-prints text-penky-orange"></i> Inventario de Modelos
+                        </h3>
+                        <p class="text-xs text-slate-500">Edita datos, ajusta precios o marca como <strong>Agotado</strong>.</p>
+                    </div>
+                    <button onclick="cambiarTabAdmin('subir')" class="py-2.5 px-4 bg-penky-navy hover:bg-penky-orange text-white text-xs font-extrabold uppercase rounded-xl transition flex items-center gap-1.5 self-start sm:self-auto shadow-sm">
+                        <i class="fa-solid fa-plus"></i> Cargar Nuevo
+                    </button>
+                </div>
+                <div id="listaInventarioAdmin" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            </div>
+
+            <div id="tabContenidoSubir" class="hidden">
+                <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm max-w-2xl mx-auto space-y-5">
+                    <div>
+                        <h3 class="font-extrabold text-base text-penky-navy uppercase flex items-center gap-2">
+                            <i class="fa-solid fa-circle-plus text-penky-orange"></i> Cargar Nueva Referencia
+                        </h3>
+                        <p class="text-xs text-slate-500">La foto se alojará automáticamente en Google Cloud Storage y el producto en Firestore.</p>
+                    </div>
+
+                    <div>
+                        <label class="text-[11px] font-bold text-slate-500 uppercase block mb-1.5">1. Foto del Calzado</label>
+                        <input type="file" id="inputFotoZapatoNuevo" accept="image/*" class="hidden" onchange="previewFotoZapatoNuevo(event)">
+                        <div onclick="document.getElementById('inputFotoZapatoNuevo').click()" class="border-2 border-dashed border-slate-300 hover:border-penky-orange rounded-2xl p-6 text-center cursor-pointer bg-slate-50 transition flex flex-col items-center justify-center min-h-[160px]">
+                            <img id="previewNuevoZapatoImg" src="" alt="Preview" class="hidden max-h-44 rounded-xl object-contain mb-2">
+                            <div id="previewNuevoZapatoPlaceholder" class="text-slate-400">
+                                <i class="fa-solid fa-camera text-4xl mb-1 text-slate-400"></i>
+                                <p class="text-xs font-bold text-slate-600">Tomar foto o elegir de la galería</p>
+                                <span class="text-[10px] text-slate-400">Toca aquí para seleccionar imagen</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="text-[11px] font-bold text-slate-500 uppercase block mb-1">2. Marca</label>
+                            <select id="nuevoZapatoMarca" onchange="toggleInputNuevaMarca()" class="w-full p-3 rounded-xl border border-slate-200 text-sm focus:border-penky-orange focus:outline-none bg-slate-50 font-bold text-penky-navy"></select>
+                            <div id="contenedorNuevaMarcaInput" class="hidden mt-2">
+                                <input type="text" id="inputNuevaMarcaNombre" placeholder="Escribe la nueva marca (Ej: Balenciaga)" class="w-full p-2.5 rounded-xl border border-penky-orange text-sm font-bold bg-white text-penky-navy focus:outline-none">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="text-[11px] font-bold text-slate-500 uppercase block mb-1">3. Nombre del Modelo</label>
+                            <input type="text" id="nuevoZapatoNombre" placeholder="Ej: Triple S Sneaker" class="w-full p-3 rounded-xl border border-slate-200 text-sm focus:border-penky-orange focus:outline-none bg-slate-50">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-[11px] font-bold text-slate-500 uppercase block mb-1">4. Etiqueta Destacada (Opcional)</label>
+                        <select id="nuevoZapatoEtiqueta" onchange="toggleInputNuevaEtiqueta()" class="w-full p-3 rounded-xl border border-slate-200 text-sm focus:border-penky-orange focus:outline-none bg-slate-50">
+                            <option value="">Sin etiqueta</option>
+                            <option value="Nuevo">Nuevo Lanzamiento</option>
+                            <option value="🔥 Más Vendido">🔥 Más Vendido</option>
+                            <option value="Tendencia">Tendencia</option>
+                            <option value="Top Confort">Top Confort</option>
+                            <option value="⭐ Especial">⭐ Edición Especial</option>
+                            <option value="__OTRA__">+ Otra etiqueta personalizada...</option>
+                        </select>
+                        <div id="contenedorNuevaEtiquetaInput" class="hidden mt-2">
+                            <input type="text" id="inputNuevaEtiquetaNombre" placeholder="Escribe tu etiqueta (Ej: ⚡ Oferta Limitada)" class="w-full p-2.5 rounded-xl border border-penky-orange text-sm font-bold bg-white text-penky-navy focus:outline-none">
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                        <div class="flex items-center justify-between mb-3">
+                            <label class="text-[11px] font-bold text-slate-600 uppercase flex items-center gap-1.5">
+                                <span>5. Configuración de Precios</span>
+                            </label>
+                            <label class="flex items-center gap-1.5 cursor-pointer">
+                                <input type="checkbox" id="checkPrecioEspecial" onchange="togglePreciosEspeciales()" class="rounded text-penky-orange focus:ring-penky-orange">
+                                <span class="text-[11px] font-bold text-penky-orange uppercase">¿Precio Especial?</span>
+                            </label>
+                        </div>
+
+                        <div id="vistaPreciosDefault" class="grid grid-cols-2 gap-2 text-center">
+                            <div class="bg-white p-2.5 rounded-xl border border-slate-200">
+                                <span class="text-[10px] text-slate-400 font-bold block uppercase">Contado Predeterminado</span>
+                                <span class="text-sm font-extrabold text-penky-navy">$170.000 COP</span>
+                            </div>
+                            <div class="bg-white p-2.5 rounded-xl border border-slate-200">
+                                <span class="text-[10px] text-slate-400 font-bold block uppercase">Crédito Predeterminado</span>
+                                <span class="text-sm font-extrabold text-penky-orange">3x $70.000 COP</span>
+                            </div>
+                        </div>
+
+                        <div id="inputsPreciosEspeciales" class="grid grid-cols-2 gap-2 hidden mt-2">
+                            <div>
+                                <label class="text-[10px] text-slate-500 font-bold block mb-1">Precio Contado (COP)</label>
+                                <input type="number" id="inputPrecioContadoCustom" placeholder="Ej: 220000" class="w-full p-2.5 rounded-xl border border-slate-200 text-sm font-bold bg-white focus:border-penky-orange focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="text-[10px] text-slate-500 font-bold block mb-1">Valor por Cuota (COP)</label>
+                                <input type="number" id="inputValorCuotaCustom" placeholder="Ej: 85000" class="w-full p-2.5 rounded-xl border border-slate-200 text-sm font-bold bg-white focus:border-penky-orange focus:outline-none">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="btnGuardarProducto" onclick="guardarNuevoProducto()" class="w-full py-4 bg-penky-orange hover:bg-penky-orangeLight text-white font-extrabold text-sm uppercase tracking-wider rounded-2xl shadow-lg transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-plus-circle text-lg"></i>
+                        <span>Publicar en la Nube y Catálogo</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL EDICIÓN -->
+    <div id="modalEditarZapato" class="fixed inset-0 bg-[#091E34]/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl w-full max-w-lg shadow-2xl relative flex flex-col max-h-[90vh] overflow-hidden">
+            <div class="bg-slate-50 p-4 border-b border-slate-200 flex justify-between items-center shrink-0">
+                <h3 class="font-extrabold text-penky-navy uppercase text-sm">Editar Modelo (En la Nube)</h3>
+                <button onclick="cerrarModalEditarZapato()" class="text-slate-400 hover:text-red-500 transition"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            
+            <div class="p-5 overflow-y-auto space-y-4 flex-1">
+                <input type="hidden" id="editZapatoId">
+
+                <div class="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl border border-slate-200">
+                    <img id="editZapatoPreviewImg" src="" alt="Zapato" class="w-16 h-16 object-cover rounded-xl border border-slate-200 shrink-0">
+                    <div class="flex-1">
+                        <label class="text-[11px] font-bold text-slate-500 uppercase block mb-1">Cambiar Foto (Opcional)</label>
+                        <input type="file" id="editZapatoInputFoto" accept="image/*" onchange="previewFotoEdicionZapato(event)" class="text-xs text-slate-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-[11px] font-bold text-slate-500 uppercase block mb-1">Nombre del Modelo</label>
+                    <input type="text" id="editZapatoNombre" class="w-full p-3 rounded-xl border border-slate-200 text-sm focus:border-penky-orange focus:outline-none bg-slate-50 font-bold">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-[11px] font-bold text-slate-500 uppercase block mb-1">Marca</label>
+                        <select id="editZapatoMarca" class="w-full p-3 rounded-xl border border-slate-200 text-sm focus:border-penky-orange focus:outline-none bg-slate-50 font-bold"></select>
+                    </div>
+                    <div>
+                        <label class="text-[11px] font-bold text-slate-500 uppercase block mb-1">Etiqueta</label>
+                        <input type="text" id="editZapatoEtiqueta" placeholder="Ej: 🔥 Más Vendido" class="w-full p-3 rounded-xl border border-slate-200 text-sm focus:border-penky-orange focus:outline-none bg-slate-50">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-200">
+                    <div>
+                        <label class="text-[11px] font-bold text-slate-500 uppercase block mb-1">Precio Contado (COP)</label>
+                        <input type="number" id="editZapatoPrecioContado" class="w-full p-3 rounded-xl border border-slate-200 text-sm font-extrabold text-penky-navy focus:border-penky-orange focus:outline-none bg-white">
+                    </div>
+                    <div>
+                        <label class="text-[11px] font-bold text-slate-500 uppercase block mb-1">Cuota Crédito (COP)</label>
+                        <input type="number" id="editZapatoValorCuota" class="w-full p-3 rounded-xl border border-slate-200 text-sm font-extrabold text-penky-orange focus:border-penky-orange focus:outline-none bg-white">
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-xl">
+                    <input type="checkbox" id="editZapatoAgotado" class="rounded text-red-600 focus:ring-red-500">
+                    <label for="editZapatoAgotado" class="text-xs font-extrabold text-red-700 uppercase cursor-pointer">Marcar este modelo como AGOTADO</label>
+                </div>
+            </div>
+
+            <div class="p-4 bg-slate-50 border-t border-slate-200 flex gap-2 shrink-0">
+                <button onclick="cerrarModalEditarZapato()" class="w-1/3 py-3 border border-slate-300 text-slate-600 font-bold text-xs rounded-xl hover:bg-slate-100 transition">Cancelar</button>
+                <button id="btnGuardarEdicion" onclick="guardarEdicionZapato()" class="w-2/3 py-3 bg-penky-orange hover:bg-penky-orangeLight text-white font-extrabold text-xs uppercase tracking-wider rounded-xl transition shadow-md">Guardar en Firebase</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- LÓGICA JAVASCRIPT -->
     <script>
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.slide');
-        const totalSlides = slides.length;
+        const firebaseConfig = {
+            apiKey: "AIzaSyDtyNbpTt3flyDNYXCLPdjyvQec0SCSZQE",
+            authDomain: "penkyshop-ee03e.firebaseapp.com",
+            projectId: "penkyshop-ee03e",
+            storageBucket: "penkyshop-ee03e.firebasestorage.app",
+            messagingSenderId: "463190149579",
+            appId: "1:463190149579:web:f91984c2fbb9bbcde80e4e",
+            measurementId: "G-EP8B11C5VB"
+        };
 
-        // Initialize Lucide Icons
-        lucide.createIcons();
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const storage = firebase.storage();
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
-                nextSlide();
-            } else if (e.key === 'ArrowLeft') {
-                prevSlide();
-            } else if (e.key === 'f' || e.key === 'F') {
-                toggleFullScreen();
+        const MARCAS_BASE = ["Todos", "Adidas", "Nike", "New Balance", "Jordan", "Fila", "Skechers", "On Cloud", "Le Coq Sportif", "Hoka", "Louis Vuitton"];
+        let MARCAS = [...MARCAS_BASE];
+        
+        const PRECIO_CONTADO = 170000;
+        const VALOR_CUOTA = 70000;
+        const NUMERO_WHATSAPP = "573004658615"; 
+
+        const SOCIOS_CONFIG = {
+            "socio1": { clave: "Jgmz242520", nombre: "JERSHON GOMEZ" },
+            "socio2": { clave: "penky2026", nombre: "LUZ GUARION" },
+            "socio3": { clave: "penky2026", nombre: "LUIS" },
+            
+        };
+
+        const CATALOGO_INICIAL = [
+            { id: "1", nombre: "Air Jordan 4 Retro 'Thunder'", marca: "Jordan", precioContado: PRECIO_CONTADO, valorCuota: VALOR_CUOTA, etiqueta: "🔥 Más Vendido", agotado: false, imagen: "https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&w=800&q=80" },
+            { id: "2", nombre: "Nike Air Force 1 '07 Low Orange", marca: "Nike", precioContado: PRECIO_CONTADO, valorCuota: VALOR_CUOTA, etiqueta: "Nuevo", agotado: false, imagen: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=800&q=80" },
+            { id: "3", nombre: "New Balance 550 Urban White", marca: "New Balance", precioContado: PRECIO_CONTADO, valorCuota: VALOR_CUOTA, etiqueta: "Tendencia", agotado: false, imagen: "https://images.unsplash.com/photo-1539185441755-769473a23570?auto=format&fit=crop&w=800&q=80" },
+            { id: "4", nombre: "On Cloudmonster All-Black", marca: "On Cloud", precioContado: PRECIO_CONTADO, valorCuota: VALOR_CUOTA, etiqueta: "Top Confort", agotado: false, imagen: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=800&q=80" },
+            { id: "5", nombre: "LV Trainer Monogram Edition", marca: "Louis Vuitton", precioContado: 220000, valorCuota: 85000, etiqueta: "⭐ Especial", agotado: false, imagen: "https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?auto=format&fit=crop&w=800&q=80" },
+            { id: "6", nombre: "Hoka Clifton 9 Running Pro", marca: "Hoka", precioContado: PRECIO_CONTADO, valorCuota: VALOR_CUOTA, etiqueta: "", agotado: true, imagen: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?auto=format&fit=crop&w=800&q=80" }
+        ];
+
+        const OPINIONES_INICIALES = [
+            { id: "op1", nombre: "Camilo Arenas", ciudad: "Bucaramanga", zapato: "Air Jordan 4", estrellas: 5, comentario: "Lo mejor de pedir con ellos fue lo de la foto de la lengüeta. Yo siempre tengo líos porque en Nike soy una talla y en Adidas otra. Me llegaron precisos y los saqué a 3 cuotas súper suave.", fecha: Date.now() },
+            { id: "op2", nombre: "Daniela Ramírez", ciudad: "Floridablanca", zapato: "New Balance 550", estrellas: 5, comentario: "Excelente atención por WhatsApp. Llené mis datos en la página en dos minutos, me atendieron rápido para coordinar la entrega y el calzado llegó impecable en su caja.", fecha: Date.now() - 86400000 },
+            { id: "op3", nombre: "Julián Santander", ciudad: "Piedecuesta", zapato: "On Cloud", estrellas: 5, comentario: "El sistema de cuotas quincenales de $70.000 es perfecto. No te desajusta el bolsillo y tienes tenis de primera. Muy recomendados los On Cloud, una nube total.", fecha: Date.now() - 172800000 }
+        ];
+
+        let catalogoZapatos = [];
+        let listaPedidos = [];
+        let listaOpiniones = [];
+        let marcaSeleccionada = "Todos";
+        let textoBusqueda = "";
+
+        let productoActual = null;
+        let pagoSeleccionado = 'contado';
+        let fotoCargada = false;
+        let nombreFotoCargada = "";
+
+        let sesionSocioActivo = sessionStorage.getItem('penky_socio_activo') || null;
+        let archivoFotoNuevo = null;
+        let archivoFotoEdicion = null;
+        let imagenEdicionActual = "";
+        let archivoFotoOpinion = null; // FOTO PARA OPINIONES
+
+        function formatearCOP(valor) {
+            return "$" + valor.toLocaleString('es-CO');
+        }
+
+        function ajustarPosicionWhatsApp() {
+            const btn = document.getElementById('btnWhatsappFlotante');
+            const footer = document.getElementById('footerPrincipal');
+            if (!btn || !footer) return;
+
+            const footerRect = footer.getBoundingClientRect();
+            const windowHeight = window.innerHeight;
+            const margenBase = 24; 
+
+            if (footerRect.top < windowHeight) {
+                const distanciaInvadida = windowHeight - footerRect.top;
+                btn.style.bottom = (distanciaInvadida + 20) + 'px';
+            } else {
+                btn.style.bottom = margenBase + 'px';
+            }
+        }
+
+        window.addEventListener('scroll', ajustarPosicionWhatsApp, { passive: true });
+        window.addEventListener('resize', ajustarPosicionWhatsApp);
+
+        function navegarA(idVista) {
+            document.querySelectorAll('.seccion-vista').forEach(el => el.classList.add('hidden'));
+
+            const target = document.getElementById(`vista-${idVista}`);
+            if (target) {
+                target.classList.remove('hidden');
+            }
+
+            const vistas = ['nosotros', 'catalogo', 'testimonios', 'cobertura'];
+            vistas.forEach(v => {
+                const btn = document.getElementById(`navBtn-${v}`);
+                if (btn) {
+                    if (v === idVista) {
+                        btn.className = "px-4 py-2 rounded-xl transition bg-penky-navy text-white shadow-sm";
+                    } else {
+                        btn.className = "px-4 py-2 rounded-xl transition text-slate-600 hover:text-penky-navy hover:bg-white";
+                    }
+                }
+            });
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            setTimeout(ajustarPosicionWhatsApp, 100);
+        }
+
+        function toggleMenuMovil() {
+            const menu = document.getElementById('menuMovilDesplegable');
+            menu.classList.toggle('hidden');
+        }
+
+        // Firebase Listeners
+        db.collection("zapatos").onSnapshot((snapshot) => {
+            if (snapshot.empty) {
+                CATALOGO_INICIAL.forEach(item => {
+                    db.collection("zapatos").doc(item.id.toString()).set(item);
+                });
+            } else {
+                catalogoZapatos = [];
+                snapshot.forEach(doc => {
+                    catalogoZapatos.push({ id: doc.id, ...doc.data() });
+                });
+
+                const marcasEnNube = new Set(MARCAS_BASE);
+                catalogoZapatos.forEach(z => { if(z.marca) marcasEnNube.add(z.marca); });
+                MARCAS = Array.from(marcasEnNube);
+
+                renderizarMarcas();
+                renderizarCatalogo();
+                actualizarTotalInventarioAdmin();
+                if (!document.getElementById('pantallaAdminCompleta').classList.contains('hidden')) {
+                    renderizarListaInventarioAdmin();
+                }
+                setTimeout(ajustarPosicionWhatsApp, 50);
             }
         });
 
-        function initDots() {
-            const dotsContainer = document.getElementById('slide-dots-container');
-            dotsContainer.innerHTML = '';
-            slides.forEach((_, idx) => {
-                const dot = document.createElement('button');
-                dot.className = `w-2.5 h-2.5 rounded-full transition-all duration-300 ${idx === currentSlide ? 'bg-cyan-400 w-6' : 'bg-slate-700 hover:bg-slate-500'}`;
-                dot.onclick = () => goToSlide(idx);
-                dot.title = `Ir a Diapositiva ${idx + 1}`;
-                dotsContainer.appendChild(dot);
+        db.collection("pedidos").orderBy("id", "desc").onSnapshot((snapshot) => {
+            listaPedidos = [];
+            snapshot.forEach(doc => {
+                listaPedidos.push({ firestoreId: doc.id, ...doc.data() });
             });
-            document.getElementById('total-slides-num').textContent = totalSlides;
-        }
-
-        function updateSlide() {
-            slides.forEach((slide, idx) => {
-                if (idx === currentSlide) {
-                    slide.classList.add('active');
-                } else {
-                    slide.classList.remove('active');
-                }
-            });
-
-            // Update Slide Number and Progress Bar
-            document.getElementById('current-slide-num').textContent = currentSlide + 1;
-            const progressPercent = ((currentSlide + 1) / totalSlides) * 100;
-            document.getElementById('progress-bar').style.width = `${progressPercent}%`;
-
-            // Update Navigation Buttons State
-            document.getElementById('btn-prev').disabled = currentSlide === 0;
-            
-            initDots();
-        }
-
-        function nextSlide() {
-            if (currentSlide < totalSlides - 1) {
-                currentSlide++;
-                updateSlide();
+            actualizarTotalPedidosAdmin();
+            if (!document.getElementById('pantallaAdminCompleta').classList.contains('hidden')) {
+                renderizarListaPedidosAdmin();
             }
-        }
+        });
 
-        function prevSlide() {
-            if (currentSlide > 0) {
-                currentSlide--;
-                updateSlide();
-            }
-        }
-
-        function goToSlide(idx) {
-            if (idx >= 0 && idx < totalSlides) {
-                currentSlide = idx;
-                updateSlide();
-            }
-        }
-
-        function syncYouTubeUrls(newUrl) {
-            const inputS1 = document.getElementById('youtube-url-input-s1');
-            const btnS1 = document.getElementById('youtube-url-btn-s1');
-            const inputS8 = document.getElementById('youtube-url-input-s8');
-            const btnS8 = document.getElementById('youtube-url-btn-s8');
-            const modalInput = document.getElementById('youtube-modal-input');
-
-            if (inputS1) inputS1.value = newUrl;
-            if (btnS1) btnS1.href = newUrl;
-            if (inputS8) inputS8.value = newUrl;
-            if (btnS8) btnS8.href = newUrl;
-            if (modalInput) modalInput.value = newUrl;
-        }
-
-        function copyChannelUrl(inputId) {
-            const inputEl = document.getElementById(inputId);
-            if (!inputEl) return;
-            
-            // Sync all first
-            syncYouTubeUrls(inputEl.value);
-
-            // Copy using standard document.execCommand fallback
-            inputEl.select();
-            document.execCommand('copy');
-
-            // Feedback Toast Notification
-            showToast('¡Enlace del canal copiado al portapapeles!');
-        }
-
-        function showToast(message) {
-            const toast = document.createElement('div');
-            toast.className = 'fixed bottom-20 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-xl bg-cyan-500 text-slate-950 font-bold text-xs shadow-2xl flex items-center gap-2 transition-all transform animate-bounce';
-            toast.innerHTML = `<i data-lucide="check-circle" class="w-4 h-4"></i> ${message}`;
-            document.body.appendChild(toast);
-            lucide.createIcons();
-
-            setTimeout(() => {
-                toast.remove();
-            }, 2500);
-        }
-
-        function openLightbox(imgSrc, title) {
-            const modal = document.getElementById('lightbox-modal');
-            const img = document.getElementById('lightbox-img');
-            const titleEl = document.getElementById('lightbox-title');
-
-            img.src = imgSrc;
-            titleEl.textContent = title || 'Vista Previa de Equipamiento';
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
-
-        function closeLightbox() {
-            const modal = document.getElementById('lightbox-modal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-
-        function openYouTubeModal() {
-            const modal = document.getElementById('youtube-modal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
-
-        function closeYouTubeModal() {
-            const modal = document.getElementById('youtube-modal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-
-        function saveChannelUrlFromModal() {
-            const val = document.getElementById('youtube-modal-input').value;
-            syncYouTubeUrls(val);
-            closeYouTubeModal();
-            showToast('Link del canal actualizado correctamente');
-        }
-
-        function toggleFullScreen() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(err => {
-                    console.log(`Error attempting to enable full-screen mode: ${err.message}`);
+        db.collection("opiniones").orderBy("fecha", "desc").onSnapshot((snapshot) => {
+            if (snapshot.empty) {
+                OPINIONES_INICIALES.forEach(op => {
+                    db.collection("opiniones").add(op);
                 });
             } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
+                listaOpiniones = [];
+                snapshot.forEach(doc => {
+                    listaOpiniones.push({ id: doc.id, ...doc.data() });
+                });
+                renderizarOpiniones();
+                setTimeout(ajustarPosicionWhatsApp, 50);
+            }
+        });
+
+        // ==============================================
+        // OPINIONES CON FOTO (COMUNIDAD)
+        // ==============================================
+        function renderizarOpiniones() {
+            const grid = document.getElementById('gridOpiniones');
+            if (!grid) return;
+
+            grid.innerHTML = listaOpiniones.map(op => {
+                const estrellasHtml = '<i class="fa-solid fa-star"></i>'.repeat(op.estrellas || 5);
+                const iniciales = op.nombre ? op.nombre.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : 'PS';
+                
+                // Si el cliente subió foto, la mostramos en la tarjeta
+                const imgHtml = op.imagen ? `<img src="${op.imagen}" alt="Foto cliente" class="w-full h-48 object-cover rounded-2xl mb-4 border border-slate-200">` : '';
+
+                return `
+                <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                    <div>
+                        ${imgHtml}
+                        <div class="flex items-center gap-1 text-amber-400 text-sm mb-3">
+                            ${estrellasHtml}
+                        </div>
+                        <p class="text-sm text-slate-600 leading-relaxed italic mb-4">
+                            "${op.comentario}"
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-3 pt-4 border-t border-slate-100">
+                        <div class="w-10 h-10 rounded-full bg-penky-blue text-white font-extrabold flex items-center justify-center text-xs shrink-0">
+                            ${iniciales}
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-extrabold text-penky-navy leading-tight">${op.nombre}</h4>
+                            <span class="text-[11px] text-slate-400">${op.ciudad} · ${op.zapato ? `Compró ${op.zapato}` : 'Cliente Verificado'}</span>
+                        </div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        function abrirModalNuevaOpinion() {
+            document.getElementById('opClienteNombre').value = '';
+            document.getElementById('opClienteCiudad').value = '';
+            document.getElementById('opClienteZapato').value = '';
+            document.getElementById('opClienteComentario').value = '';
+            
+            // Limpiar foto previa
+            archivoFotoOpinion = null;
+            document.getElementById('opClienteFoto').value = '';
+            document.getElementById('previewOpinionContenedor').classList.add('hidden');
+            document.getElementById('btnFotoOpinion').innerHTML = '<i class="fa-solid fa-camera text-lg"></i> Adjuntar foto de tus tenis';
+
+            document.getElementById('modalNuevaOpinion').classList.remove('hidden');
+        }
+
+        function cerrarModalNuevaOpinion() {
+            document.getElementById('modalNuevaOpinion').classList.add('hidden');
+        }
+
+        function previewFotoOpinion(event) {
+            archivoFotoOpinion = event.target.files[0];
+            if (archivoFotoOpinion) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('previewOpinionImg').src = e.target.result;
+                    document.getElementById('previewOpinionContenedor').classList.remove('hidden');
+                    document.getElementById('btnFotoOpinion').innerHTML = '<i class="fa-solid fa-check"></i> Foto seleccionada';
+                };
+                reader.readAsDataURL(archivoFotoOpinion);
+            }
+        }
+
+        async function guardarNuevaOpinion() {
+            const nombre = document.getElementById('opClienteNombre').value.trim();
+            const ciudad = document.getElementById('opClienteCiudad').value.trim();
+            const zapato = document.getElementById('opClienteZapato').value.trim();
+            const estrellas = parseInt(document.getElementById('opClienteEstrellas').value);
+            const comentario = document.getElementById('opClienteComentario').value.trim();
+            const btn = document.getElementById('btnGuardarOpinion');
+
+            if (!nombre || !ciudad || !comentario) {
+                alert("Por favor completa tu nombre, ciudad y comentario.");
+                return;
+            }
+
+            try {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando...';
+
+                let urlImagenOpinion = "";
+                
+                // Si el cliente adjuntó foto, la subimos a Storage
+                if (archivoFotoOpinion) {
+                    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Subiendo foto...';
+                    const storageRef = storage.ref(`opiniones/${Date.now()}_${archivoFotoOpinion.name}`);
+                    const snapshot = await storageRef.put(archivoFotoOpinion);
+                    urlImagenOpinion = await snapshot.ref.getDownloadURL();
+                }
+
+                await db.collection("opiniones").add({
+                    nombre: nombre,
+                    ciudad: ciudad,
+                    zapato: zapato,
+                    estrellas: estrellas,
+                    comentario: comentario,
+                    imagen: urlImagenOpinion,
+                    fecha: Date.now()
+                });
+
+                cerrarModalNuevaOpinion();
+                alert("¡Gracias por tu opinión! Ya ha sido publicada en el muro.");
+            } catch (err) {
+                console.error("Error guardando opinión:", err);
+                alert("Ocurrió un error al guardar la opinión.");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Publicar mi Opinión';
+            }
+        }
+
+        function renderizarMarcas() {
+            document.getElementById('contenedorMarcas').innerHTML = MARCAS.map(marca => {
+                const activa = marca === marcaSeleccionada;
+                const clases = activa ? "bg-penky-orange text-white shadow-md shadow-penky-orange/30 border-penky-orange" : "bg-white text-penky-navy border-slate-200 hover:bg-slate-50";
+                return `<button onclick="seleccionarMarca('${marca}')" class="px-4 py-2 rounded-full text-xs font-extrabold border whitespace-nowrap transition-all ${clases}">${marca}</button>`;
+            }).join('');
+        }
+
+        function renderizarCatalogo() {
+            const grid = document.getElementById('gridProductos');
+            if (!grid) return;
+
+            const filtrados = catalogoZapatos.filter(item => 
+                (marcaSeleccionada === "Todos" || item.marca === marcaSeleccionada) &&
+                (item.nombre.toLowerCase().includes(textoBusqueda.toLowerCase()) || item.marca.toLowerCase().includes(textoBusqueda.toLowerCase()))
+            );
+            
+            document.getElementById('contadorModelos').textContent = filtrados.length + " modelos disponibles";
+            
+            if (filtrados.length === 0) {
+                grid.innerHTML = "";
+                document.getElementById('estadoVacio').classList.remove('hidden');
+                setTimeout(ajustarPosicionWhatsApp, 50);
+                return;
+            }
+            
+            document.getElementById('estadoVacio').classList.add('hidden');
+
+            grid.innerHTML = filtrados.map(zapato => {
+                const esAgotado = zapato.agotado === true;
+
+                return `
+                <article class="shoe-card bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl flex flex-col justify-between ${esAgotado ? 'opacity-80' : ''}">
+                    <div>
+                        <div class="relative h-56 bg-slate-100 group">
+                            <img src="${zapato.imagen}" alt="${zapato.nombre}" class="w-full h-full object-cover ${esAgotado ? 'grayscale-[40%]' : ''}">
+                            <span class="absolute top-3 left-3 bg-penky-navy/90 text-white text-[11px] font-extrabold uppercase tracking-wider px-3 py-1 rounded-full">${zapato.marca}</span>
+                            
+                            ${esAgotado ? `
+                                <span class="absolute top-3 right-3 bg-red-600 text-white text-[11px] font-extrabold uppercase px-2.5 py-1 rounded-full shadow-md">
+                                    Agotado
+                                </span>
+                            ` : (zapato.etiqueta ? `
+                                <span class="absolute top-3 right-3 bg-penky-orange text-white text-[11px] font-extrabold px-2.5 py-1 rounded-full">${zapato.etiqueta}</span>
+                            ` : '')}
+                        </div>
+                        <div class="p-4 pb-2">
+                            <h3 class="font-extrabold text-base sm:text-lg text-penky-navy leading-tight line-clamp-2">${zapato.nombre}</h3>
+                        </div>
+                    </div>
+                    <div class="p-4 pt-2">
+                        <div class="grid grid-cols-2 gap-2 bg-slate-50 p-2.5 rounded-2xl mb-3 border border-slate-100">
+                            <div class="bg-white p-2 rounded-xl border border-slate-100">
+                                <span class="block text-[10px] font-bold text-slate-400">💵 CONTADO</span>
+                                <span class="block text-sm font-extrabold text-penky-navy">${formatearCOP(zapato.precioContado)}</span>
+                            </div>
+                            <div class="bg-orange-50/70 p-2 rounded-xl border border-penky-orange/30">
+                                <span class="block text-[10px] font-bold text-penky-orange">💳 CRÉDITO</span>
+                                <span class="block text-sm font-extrabold text-penky-orange">3x ${formatearCOP(zapato.valorCuota)}</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between text-[11px] text-slate-500 font-medium mb-3 px-1">
+                            <span><i class="fa-solid fa-ruler-horizontal text-penky-orange mr-1"></i> Talla por foto</span>
+                            <span><i class="fa-solid fa-truck-fast text-penky-navy mr-1"></i> Envío a coordinar</span>
+                        </div>
+                        
+                        ${esAgotado ? `
+                            <button disabled class="w-full py-3 px-4 bg-slate-300 text-slate-500 font-extrabold text-sm rounded-2xl cursor-not-allowed flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-ban"></i> Agotado Temporalmente
+                            </button>
+                        ` : `
+                            <button onclick="abrirPedido('${zapato.id}')" class="w-full py-3 px-4 bg-penky-navy hover:bg-penky-orange text-white font-extrabold text-sm rounded-2xl shadow-md transition-all flex items-center justify-center gap-2">
+                                Elegir y Hacer Pedido <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        `}
+                    </div>
+                </article>
+                `;
+            }).join('');
+
+            setTimeout(ajustarPosicionWhatsApp, 50);
+        }
+
+        function seleccionarMarca(marca) { 
+            marcaSeleccionada = marca; 
+            renderizarMarcas(); 
+            renderizarCatalogo(); 
+        }
+
+        function resetearFiltros() { 
+            marcaSeleccionada = "Todos"; 
+            textoBusqueda = ""; 
+            const input = document.getElementById('inputBusqueda');
+            if (input) input.value = "";
+            renderizarMarcas(); 
+            renderizarCatalogo(); 
+        }
+
+        const inputBusquedaEl = document.getElementById('inputBusqueda');
+        if (inputBusquedaEl) {
+            inputBusquedaEl.addEventListener('input', (e) => {
+                textoBusqueda = e.target.value;
+                renderizarCatalogo();
+            });
+        }
+
+        function abrirPedido(idZapato) {
+            productoActual = catalogoZapatos.find(z => z.id.toString() === idZapato.toString());
+            
+            document.getElementById('modalImg').src = productoActual.imagen;
+            document.getElementById('modalNombre').textContent = productoActual.nombre;
+            document.getElementById('modalMarca').textContent = productoActual.marca;
+            document.getElementById('modalPrecioContado').textContent = formatearCOP(productoActual.precioContado || PRECIO_CONTADO);
+            document.getElementById('modalPrecioCredito').textContent = `3x ${formatearCOP(productoActual.valorCuota || VALOR_CUOTA)}`;
+            
+            seleccionarPago('contado');
+            fotoCargada = false;
+            nombreFotoCargada = "";
+            
+            document.getElementById('inputFotoLengueta').value = "";
+            document.getElementById('contenedorPreviewFoto').classList.add('hidden');
+            document.getElementById('contenedorPreviewFoto').classList.remove('flex');
+            
+            let btnFoto = document.getElementById('btnFoto');
+            btnFoto.className = "w-full p-4 border-2 border-dashed border-slate-300 rounded-xl text-slate-500 text-sm font-bold hover:bg-slate-50 hover:border-penky-blue transition flex items-center justify-center gap-2 mb-2";
+            btnFoto.style.backgroundColor = "";
+            btnFoto.style.borderColor = "";
+            btnFoto.style.color = "";
+            btnFoto.innerHTML = '<i class="fa-solid fa-camera text-lg"></i> Adjuntar foto de marquilla/lengüeta';
+            
+            document.getElementById('clienteNombre').value = '';
+            document.getElementById('clienteTelefono').value = '';
+            document.getElementById('clienteCiudad').value = '';
+            document.getElementById('clienteDireccion').value = '';
+            
+            document.getElementById('modalPedido').classList.remove('hidden');
+        }
+
+        function cerrarModal() {
+            document.getElementById('modalPedido').classList.add('hidden');
+        }
+
+        function seleccionarPago(metodo) {
+            pagoSeleccionado = metodo;
+            const btnContado = document.getElementById('btnContado');
+            const btnCredito = document.getElementById('btnCredito');
+            const checkContado = document.getElementById('checkContado');
+            const checkCredito = document.getElementById('checkCredito');
+
+            if(metodo === 'contado') {
+                btnContado.className = "relative p-3 rounded-xl border-2 border-penky-blue bg-penky-blue/5 text-left transition-all";
+                checkContado.className = "absolute top-2 right-2 text-penky-blue";
+                btnCredito.className = "relative p-3 rounded-xl border-2 border-slate-200 bg-white text-left transition-all";
+                checkCredito.className = "absolute top-2 right-2 text-slate-300 hidden";
+            } else {
+                btnCredito.className = "relative p-3 rounded-xl border-2 border-penky-orange bg-penky-orange/5 text-left transition-all";
+                checkCredito.className = "absolute top-2 right-2 text-penky-orange";
+                btnContado.className = "relative p-3 rounded-xl border-2 border-slate-200 bg-white text-left transition-all";
+                checkContado.className = "absolute top-2 right-2 text-slate-300 hidden";
+            }
+        }
+
+        function fotoSeleccionada(event) {
+            const archivo = event.target.files[0];
+            if (archivo) {
+                fotoCargada = true;
+                nombreFotoCargada = archivo.name;
+                
+                let btnFoto = document.getElementById('btnFoto');
+                btnFoto.className = "w-full p-4 border-2 rounded-xl text-sm font-bold transition flex items-center justify-center gap-2 mb-2";
+                btnFoto.style.borderColor = "#25D366";
+                btnFoto.style.backgroundColor = "rgba(37, 211, 102, 0.1)";
+                btnFoto.style.color = "#128C7E";
+                btnFoto.innerHTML = '<i class="fa-solid fa-arrows-rotate text-lg"></i> Cambiar foto seleccionada';
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('imgPreview').src = e.target.result;
+                    const previewBox = document.getElementById('contenedorPreviewFoto');
+                    previewBox.classList.remove('hidden');
+                    previewBox.classList.add('flex');
+                };
+                reader.readAsDataURL(archivo);
+            }
+        }
+
+        async function enviarWhatsApp() {
+            const nombre = document.getElementById('clienteNombre').value.trim();
+            const telefono = document.getElementById('clienteTelefono').value.trim();
+            const ciudad = document.getElementById('clienteCiudad').value.trim();
+            const direccion = document.getElementById('clienteDireccion').value.trim();
+
+            if(!nombre || !telefono || !ciudad || !direccion) {
+                alert("Por favor, completa todos los datos de envío.");
+                return;
+            }
+
+            const valorFinal = pagoSeleccionado === 'contado' 
+                ? (productoActual.precioContado || PRECIO_CONTADO)
+                : ((productoActual.valorCuota || VALOR_CUOTA) * 3);
+
+            const cuotaValor = productoActual.valorCuota || VALOR_CUOTA;
+
+            const fotoTexto = fotoCargada 
+                ? `Si, lista en galería (${nombreFotoCargada.substring(0, 18)}...) - Te la adjunto en este chat` 
+                : "No adjuntada aún";
+
+            const nuevoPedido = {
+                id: Date.now(),
+                fecha: new Date().toLocaleString('es-CO', { dateStyle: 'short', timeStyle: 'short' }),
+                cliente: {
+                    nombre: nombre,
+                    telefono: telefono,
+                    ciudad: ciudad,
+                    direccion: direccion
+                },
+                zapato: {
+                    id: productoActual.id,
+                    nombre: productoActual.nombre,
+                    marca: productoActual.marca,
+                    imagen: productoActual.imagen
+                },
+                metodoPago: pagoSeleccionado,
+                valorTotal: valorFinal,
+                valorCuota: cuotaValor,
+                estadoEnvio: "Pendiente",
+                fotoMarquillaTexto: fotoTexto,
+                cuotas: pagoSeleccionado === 'credito' ? [
+                    { numero: 1, pagada: false, fechaPago: null },
+                    { numero: 2, pagada: false, fechaPago: null },
+                    { numero: 3, pagada: false, fechaPago: null }
+                ] : [],
+                contadoPagado: false
+            };
+
+            try {
+                await db.collection("pedidos").add(nuevoPedido);
+            } catch (err) {
+                console.error("Error guardando pedido en Firebase:", err);
+            }
+
+            const textoMensaje = 
+`¡Hola PENKY SHOP! Quiero hacer un pedido:
+
+*Modelo:* ${productoActual.nombre}
+*Marca:* ${productoActual.marca}
+*Pago:* ${pagoSeleccionado.toUpperCase()} (${formatearCOP(valorFinal)})
+
+*--- DATOS DE ENVÍO ---*
+*Nombre:* ${nombre}
+*Tel:* ${telefono}
+*Ciudad:* ${ciudad}
+*Dirección:* ${direccion}
+*Foto Marquilla:* ${fotoTexto}
+
+¡Quedo atento para coordinar la entrega!`;
+
+            const url = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(textoMensaje)}`;
+            window.open(url, '_blank');
+            cerrarModal();
+        }
+
+        // Panel de Socios
+        function abrirModalAdmin() {
+            if (sesionSocioActivo) {
+                mostrarDashboardAdmin();
+            } else {
+                document.getElementById('adminUsuario').value = '';
+                document.getElementById('adminClave').value = '';
+                document.getElementById('errorLogin').classList.add('hidden');
+                document.getElementById('modalAdminLogin').classList.remove('hidden');
+            }
+        }
+
+        function cerrarModalAdminLogin() {
+            document.getElementById('modalAdminLogin').classList.add('hidden');
+        }
+
+        function procesarLoginAdmin() {
+            const user = document.getElementById('adminUsuario').value.trim().toLowerCase();
+            const pass = document.getElementById('adminClave').value.trim();
+
+            if (SOCIOS_CONFIG[user] && SOCIOS_CONFIG[user].clave === pass) {
+                sesionSocioActivo = SOCIOS_CONFIG[user].nombre;
+                sessionStorage.setItem('penky_socio_activo', sesionSocioActivo);
+                cerrarModalAdminLogin();
+                mostrarDashboardAdmin();
+            } else {
+                document.getElementById('errorLogin').classList.remove('hidden');
+            }
+        }
+
+        function mostrarDashboardAdmin() {
+            document.getElementById('socioActivoNombre').textContent = sesionSocioActivo;
+            llenarSelectMarcasAdmin();
+            actualizarTotalInventarioAdmin();
+            actualizarTotalPedidosAdmin();
+            cambiarTabAdmin('pedidos');
+
+            document.getElementById('vistaTiendaPublica').classList.add('hidden');
+            document.getElementById('pantallaAdminCompleta').classList.remove('hidden');
+            document.getElementById('pantallaAdminCompleta').classList.add('flex');
+            window.scrollTo(0, 0);
+        }
+
+        function volverATiendaPublica() {
+            document.getElementById('pantallaAdminCompleta').classList.add('hidden');
+            document.getElementById('pantallaAdminCompleta').classList.remove('flex');
+            document.getElementById('vistaTiendaPublica').classList.remove('hidden');
+            navegarA('catalogo');
+            window.scrollTo(0, 0);
+        }
+
+        function cerrarSesionAdmin() {
+            sessionStorage.removeItem('penky_socio_activo');
+            sesionSocioActivo = null;
+            volverATiendaPublica();
+            alert("Has cerrado sesión como socio.");
+        }
+
+        function cambiarTabAdmin(tab) {
+            const tabBtnSubir = document.getElementById('tabBtnSubir');
+            const tabBtnInventario = document.getElementById('tabBtnInventario');
+            const tabBtnPedidos = document.getElementById('tabBtnPedidos');
+
+            const tabContenidoSubir = document.getElementById('tabContenidoSubir');
+            const tabContenidoInventario = document.getElementById('tabContenidoInventario');
+            const tabContenidoPedidos = document.getElementById('tabContenidoPedidos');
+
+            const inactivo = "flex-1 py-3 px-3 rounded-xl text-xs sm:text-sm font-extrabold uppercase tracking-wider transition flex items-center justify-center gap-2 text-slate-600 hover:text-penky-navy hover:bg-slate-50";
+            const activo = "flex-1 py-3 px-3 rounded-xl text-xs sm:text-sm font-extrabold uppercase tracking-wider transition flex items-center justify-center gap-2 bg-penky-orange text-white shadow-sm";
+
+            tabBtnSubir.className = inactivo;
+            tabBtnInventario.className = inactivo;
+            tabBtnPedidos.className = inactivo;
+
+            tabContenidoSubir.classList.add('hidden');
+            tabContenidoInventario.classList.add('hidden');
+            tabContenidoPedidos.classList.add('hidden');
+
+            if (tab === 'pedidos') {
+                tabBtnPedidos.className = activo;
+                tabContenidoPedidos.classList.remove('hidden');
+                renderizarListaPedidosAdmin();
+            } else if (tab === 'inventario') {
+                tabBtnInventario.className = activo;
+                tabContenidoInventario.classList.remove('hidden');
+                renderizarListaInventarioAdmin();
+            } else if (tab === 'subir') {
+                tabBtnSubir.className = activo;
+                tabContenidoSubir.classList.remove('hidden');
+            }
+        }
+
+        function llenarSelectMarcasAdmin() {
+            const select = document.getElementById('nuevoZapatoMarca');
+            const marcasDisponibles = MARCAS.filter(m => m !== "Todos");
+            select.innerHTML = marcasDisponibles.map(m => `<option value="${m}">${m}</option>`).join('') +
+                               `<option value="__OTRA__" class="font-bold text-penky-orange">+ Agregar nueva marca...</option>`;
+            toggleInputNuevaMarca();
+        }
+
+        function toggleInputNuevaMarca() {
+            const select = document.getElementById('nuevoZapatoMarca');
+            const contenedorInput = document.getElementById('contenedorNuevaMarcaInput');
+            if (select.value === '__OTRA__') {
+                contenedorInput.classList.remove('hidden');
+                document.getElementById('inputNuevaMarcaNombre').focus();
+            } else {
+                contenedorInput.classList.add('hidden');
+                document.getElementById('inputNuevaMarcaNombre').value = '';
+            }
+        }
+
+        function toggleInputNuevaEtiqueta() {
+            const select = document.getElementById('nuevoZapatoEtiqueta');
+            const contenedorInput = document.getElementById('contenedorNuevaEtiquetaInput');
+            if (select.value === '__OTRA__') {
+                contenedorInput.classList.remove('hidden');
+                document.getElementById('inputNuevaEtiquetaNombre').focus();
+            } else {
+                contenedorInput.classList.add('hidden');
+                document.getElementById('inputNuevaEtiquetaNombre').value = '';
+            }
+        }
+
+        function togglePreciosEspeciales() {
+            const isChecked = document.getElementById('checkPrecioEspecial').checked;
+            const vistaDefault = document.getElementById('vistaPreciosDefault');
+            const inputsCustom = document.getElementById('inputsPreciosEspeciales');
+            if (isChecked) {
+                vistaDefault.classList.add('hidden');
+                inputsCustom.classList.remove('hidden');
+            } else {
+                vistaDefault.classList.remove('hidden');
+                inputsCustom.classList.add('hidden');
+                document.getElementById('inputPrecioContadoCustom').value = '';
+                document.getElementById('inputValorCuotaCustom').value = '';
+            }
+        }
+
+        function previewFotoZapatoNuevo(event) {
+            archivoFotoNuevo = event.target.files[0];
+            if (archivoFotoNuevo) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const previewImg = document.getElementById('previewNuevoZapatoImg');
+                    const placeholder = document.getElementById('previewNuevoZapatoPlaceholder');
+                    previewImg.src = e.target.result;
+                    previewImg.classList.remove('hidden');
+                    placeholder.classList.add('hidden');
+                };
+                reader.readAsDataURL(archivoFotoNuevo);
+            }
+        }
+
+        async function guardarNuevoProducto() {
+            let marca = document.getElementById('nuevoZapatoMarca').value;
+            const nombre = document.getElementById('nuevoZapatoNombre').value.trim();
+            let etiqueta = document.getElementById('nuevoZapatoEtiqueta').value;
+            const esEspecial = document.getElementById('checkPrecioEspecial').checked;
+            const btnGuardar = document.getElementById('btnGuardarProducto');
+
+            if (!archivoFotoNuevo) {
+                alert("Por favor toma o selecciona una foto para el zapato.");
+                return;
+            }
+
+            if (marca === '__OTRA__') {
+                const nuevaMarcaNombre = document.getElementById('inputNuevaMarcaNombre').value.trim();
+                if (!nuevaMarcaNombre) {
+                    alert("Por favor escribe el nombre de la nueva marca.");
+                    return;
+                }
+                marca = nuevaMarcaNombre;
+            }
+
+            if (!nombre) {
+                alert("Por favor escribe el nombre del modelo.");
+                return;
+            }
+
+            if (etiqueta === '__OTRA__') {
+                const nuevaEtiquetaNombre = document.getElementById('inputNuevaEtiquetaNombre').value.trim();
+                if (!nuevaEtiquetaNombre) {
+                    alert("Por favor escribe el texto de tu etiqueta personalizada.");
+                    return;
+                }
+                etiqueta = nuevaEtiquetaNombre;
+            }
+
+            let precioFinalContado = PRECIO_CONTADO;
+            let precioFinalCuota = VALOR_CUOTA;
+
+            if (esEspecial) {
+                const precioContadoInput = parseInt(document.getElementById('inputPrecioContadoCustom').value);
+                const valorCuotaInput = parseInt(document.getElementById('inputValorCuotaCustom').value);
+
+                if (!precioContadoInput || !valorCuotaInput) {
+                    alert("Por favor indica los valores para el precio especial de contado y la cuota.");
+                    return;
+                }
+                precioFinalContado = precioContadoInput;
+                precioFinalCuota = valorCuotaInput;
+            }
+
+            try {
+                btnGuardar.disabled = true;
+                btnGuardar.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-lg"></i> Subiendo foto a Firebase Storage...';
+
+                const storageRef = storage.ref(`calzado/${Date.now()}_${archivoFotoNuevo.name}`);
+                const snapshot = await storageRef.put(archivoFotoNuevo);
+                const urlDescarga = await snapshot.ref.getDownloadURL();
+
+                btnGuardar.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-lg"></i> Registrando en Firestore...';
+
+                const nuevoProducto = {
+                    nombre: nombre,
+                    marca: marca,
+                    precioContado: precioFinalContado,
+                    valorCuota: precioFinalCuota,
+                    etiqueta: etiqueta,
+                    agotado: false,
+                    imagen: urlDescarga,
+                    fechaCreacion: Date.now()
+                };
+
+                await db.collection("zapatos").add(nuevoProducto);
+
+                document.getElementById('nuevoZapatoNombre').value = '';
+                document.getElementById('nuevoZapatoEtiqueta').value = '';
+                document.getElementById('inputFotoZapatoNuevo').value = '';
+                document.getElementById('previewNuevoZapatoImg').classList.add('hidden');
+                document.getElementById('previewNuevoZapatoPlaceholder').classList.remove('hidden');
+                archivoFotoNuevo = null;
+
+                document.getElementById('contenedorNuevaMarcaInput').classList.add('hidden');
+                document.getElementById('inputNuevaMarcaNombre').value = '';
+                document.getElementById('contenedorNuevaEtiquetaInput').classList.add('hidden');
+                document.getElementById('inputNuevaEtiquetaNombre').value = '';
+
+                if (esEspecial) {
+                    document.getElementById('checkPrecioEspecial').checked = false;
+                    togglePreciosEspeciales();
+                }
+
+                alert(`¡${nombre} (${marca}) publicado con éxito en la nube!`);
+                cambiarTabAdmin('inventario');
+
+            } catch (err) {
+                console.error("Error al guardar producto:", err);
+                alert("Ocurrió un error al subir el producto a Firebase.");
+            } finally {
+                btnGuardar.disabled = false;
+                btnGuardar.innerHTML = '<i class="fa-solid fa-plus-circle text-lg"></i> Publicar en la Nube y Catálogo';
+            }
+        }
+
+        function actualizarTotalInventarioAdmin() {
+            const el = document.getElementById('adminTotalModelos');
+            if (el) el.textContent = catalogoZapatos.length;
+        }
+
+        function actualizarTotalPedidosAdmin() {
+            const el = document.getElementById('adminTotalPedidos');
+            if (el) el.textContent = listaPedidos.length;
+        }
+
+        function renderizarListaInventarioAdmin() {
+            const contenedor = document.getElementById('listaInventarioAdmin');
+            actualizarTotalInventarioAdmin();
+
+            if (catalogoZapatos.length === 0) {
+                contenedor.innerHTML = '<p class="text-xs text-slate-400 text-center py-6 col-span-2">No hay modelos activos en este momento.</p>';
+                return;
+            }
+
+            contenedor.innerHTML = catalogoZapatos.map(z => {
+                const esAgotado = z.agotado === true;
+
+                return `
+                <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col justify-between gap-3 ${esAgotado ? 'border-red-200 bg-red-50/20' : ''}">
+                    
+                    <div class="flex items-start gap-3">
+                        <img src="${z.imagen}" alt="${z.nombre}" class="w-20 h-20 object-cover rounded-xl border border-slate-200 shrink-0">
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-1.5 mb-1">
+                                <span class="text-[10px] font-extrabold uppercase text-penky-orange">${z.marca}</span>
+                                ${esAgotado ? `
+                                    <span class="text-[9px] font-extrabold bg-red-600 text-white px-2 py-0.5 rounded-full uppercase">Agotado</span>
+                                ` : `
+                                    <span class="text-[9px] font-extrabold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full uppercase">Disponible</span>
+                                `}
+                            </div>
+                            <h4 class="text-xs sm:text-sm font-extrabold text-penky-navy leading-tight truncate">${z.nombre}</h4>
+                            <div class="text-[11px] font-bold text-slate-500 mt-1 flex flex-wrap gap-2">
+                                <span>💵 Contado: <strong>${formatearCOP(z.precioContado)}</strong></span>
+                                <span>💳 Crédito: <strong>3x ${formatearCOP(z.valorCuota)}</strong></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-2 pt-2 border-t border-slate-100 text-xs font-bold">
+                        <button onclick="toggleAgotadoModelo('${z.id}', ${!esAgotado})" class="py-2 px-2 rounded-xl transition flex items-center justify-center gap-1.5 ${esAgotado ? 'bg-emerald-500 text-white hover:bg-emerald-600' : 'bg-red-50 text-red-600 hover:bg-red-100 border border-red-200'}">
+                            <i class="fa-solid ${esAgotado ? 'fa-check' : 'fa-ban'}"></i>
+                            <span>${esAgotado ? 'Activar' : 'Agotado'}</span>
+                        </button>
+
+                        <button onclick="abrirModalEditarZapato('${z.id}')" class="py-2 px-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-pen-to-square text-penky-orange"></i>
+                            <span>Editar</span>
+                        </button>
+
+                        <button onclick="eliminarProductoAdmin('${z.id}')" class="py-2 px-2 bg-slate-100 hover:bg-red-50 text-slate-400 hover:text-red-500 rounded-xl transition flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-trash-can"></i>
+                            <span>Borrar</span>
+                        </button>
+                    </div>
+
+                </div>
+                `;
+            }).join('');
+        }
+
+        async function toggleAgotadoModelo(id, nuevoEstado) {
+            try {
+                await db.collection("zapatos").doc(id.toString()).update({ agotado: nuevoEstado });
+            } catch (err) {
+                console.error("Error al cambiar estado agotado:", err);
+            }
+        }
+
+        function abrirModalEditarZapato(id) {
+            const zapato = catalogoZapatos.find(z => z.id.toString() === id.toString());
+            if (!zapato) return;
+
+            document.getElementById('editZapatoId').value = zapato.id;
+            document.getElementById('editZapatoPreviewImg').src = zapato.imagen;
+            document.getElementById('editZapatoNombre').value = zapato.nombre;
+            document.getElementById('editZapatoEtiqueta').value = zapato.etiqueta || '';
+            document.getElementById('editZapatoPrecioContado').value = zapato.precioContado;
+            document.getElementById('editZapatoValorCuota').value = zapato.valorCuota;
+            document.getElementById('editZapatoAgotado').checked = zapato.agotado === true;
+            document.getElementById('editZapatoInputFoto').value = '';
+            archivoFotoEdicion = null;
+            imagenEdicionActual = zapato.imagen;
+
+            const selectMarca = document.getElementById('editZapatoMarca');
+            const marcasDisponibles = MARCAS.filter(m => m !== "Todos");
+            selectMarca.innerHTML = marcasDisponibles.map(m => `<option value="${m}" ${m === zapato.marca ? 'selected' : ''}>${m}</option>`).join('');
+
+            document.getElementById('modalEditarZapato').classList.remove('hidden');
+        }
+
+        function cerrarModalEditarZapato() {
+            document.getElementById('modalEditarZapato').classList.add('hidden');
+        }
+
+        function previewFotoEdicionZapato(event) {
+            archivoFotoEdicion = event.target.files[0];
+            if (archivoFotoEdicion) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('editZapatoPreviewImg').src = e.target.result;
+                };
+                reader.readAsDataURL(archivoFotoEdicion);
+            }
+        }
+
+        async function guardarEdicionZapato() {
+            const id = document.getElementById('editZapatoId').value;
+            const zapato = catalogoZapatos.find(z => z.id.toString() === id.toString());
+            if (!zapato) return;
+
+            const nombre = document.getElementById('editZapatoNombre').value.trim();
+            const marca = document.getElementById('editZapatoMarca').value;
+            const etiqueta = document.getElementById('editZapatoEtiqueta').value.trim();
+            const precioContado = parseInt(document.getElementById('editZapatoPrecioContado').value);
+            const valorCuota = parseInt(document.getElementById('editZapatoValorCuota').value);
+            const agotado = document.getElementById('editZapatoAgotado').checked;
+            const btnGuardar = document.getElementById('btnGuardarEdicion');
+
+            if (!nombre || !precioContado || !valorCuota) {
+                alert("Por favor completa los campos de nombre y precios.");
+                return;
+            }
+
+            try {
+                btnGuardar.disabled = true;
+                btnGuardar.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando...';
+
+                let urlImagenFinal = imagenEdicionActual;
+
+                if (archivoFotoEdicion) {
+                    const storageRef = storage.ref(`calzado/${Date.now()}_${archivoFotoEdicion.name}`);
+                    const snap = await storageRef.put(archivoFotoEdicion);
+                    urlImagenFinal = await snap.ref.getDownloadURL();
+                }
+
+                await db.collection("zapatos").doc(id.toString()).update({
+                    nombre: nombre,
+                    marca: marca,
+                    etiqueta: etiqueta,
+                    precioContado: precioContado,
+                    valorCuota: valorCuota,
+                    agotado: agotado,
+                    imagen: urlImagenFinal
+                });
+
+                cerrarModalEditarZapato();
+                alert("¡Modelo actualizado con éxito en la nube!");
+            } catch (err) {
+                console.error("Error al actualizar zapato:", err);
+                alert("Error al actualizar modelo en Firebase.");
+            } finally {
+                btnGuardar.disabled = false;
+                btnGuardar.innerHTML = 'Guardar en Firebase';
+            }
+        }
+
+        async function eliminarProductoAdmin(id) {
+            const zapato = catalogoZapatos.find(z => z.id.toString() === id.toString());
+            if (confirm(`¿Estás seguro de retirar definitivamente '${zapato.nombre}' del catálogo en la nube?`)) {
+                try {
+                    await db.collection("zapatos").doc(id.toString()).delete();
+                } catch (err) {
+                    console.error("Error eliminando producto:", err);
                 }
             }
         }
 
-        // Add input change listeners to sync typing live
-        document.getElementById('youtube-url-input-s1')?.addEventListener('input', (e) => syncYouTubeUrls(e.target.value));
-        document.getElementById('youtube-url-input-s8')?.addEventListener('input', (e) => syncYouTubeUrls(e.target.value));
+        function renderizarListaPedidosAdmin() {
+            const contenedor = document.getElementById('listaPedidosAdmin');
+            actualizarTotalPedidosAdmin();
 
-        // Initial setup on load
-        window.onload = function() {
-            initDots();
-            updateSlide();
-        };
+            if (listaPedidos.length === 0) {
+                contenedor.innerHTML = `
+                    <div class="text-center py-12 bg-white rounded-3xl border border-slate-200 p-6 shadow-sm">
+                        <i class="fa-solid fa-receipt text-4xl text-slate-300 mb-2"></i>
+                        <p class="text-sm font-bold text-slate-600">Aún no hay pedidos registrados.</p>
+                        <p class="text-xs text-slate-400 mt-1">Cuando un cliente complete un pedido en la tienda, aparecerá aquí sincronizado desde Firebase.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            contenedor.innerHTML = listaPedidos.map(pedido => {
+                const esCredito = pedido.metodoPago === 'credito';
+                
+                let totalPagado = 0;
+                let cuotasPagadasCount = 0;
+                
+                if (esCredito && pedido.cuotas) {
+                    cuotasPagadasCount = pedido.cuotas.filter(c => c.pagada).length;
+                    totalPagado = cuotasPagadasCount * pedido.valorCuota;
+                } else {
+                    totalPagado = pedido.contadoPagado ? pedido.valorTotal : 0;
+                }
+                const saldoPendiente = Math.max(0, pedido.valorTotal - totalPagado);
+
+                const estadoColores = {
+                    "Pendiente": "bg-amber-100 text-amber-800 border-amber-300",
+                    "En Preparación": "bg-purple-100 text-purple-800 border-purple-300",
+                    "En Camino": "bg-blue-100 text-blue-800 border-blue-300",
+                    "Entregado": "bg-emerald-100 text-emerald-800 border-emerald-300",
+                    "Cancelado": "bg-red-100 text-red-800 border-red-300"
+                };
+
+                return `
+                    <div class="bg-white border border-slate-200 rounded-3xl p-5 shadow-sm space-y-4">
+                        
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+                            <div>
+                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Pedido #${pedido.id.toString().slice(-5)} · ${pedido.fecha}</span>
+                                <h4 class="font-extrabold text-base sm:text-lg text-penky-navy flex items-center gap-2">
+                                    <span>${pedido.cliente.nombre}</span>
+                                    <span class="text-xs px-2.5 py-0.5 rounded-full font-extrabold uppercase ${esCredito ? 'bg-orange-100 text-penky-orange border border-orange-200' : 'bg-emerald-100 text-emerald-700 border border-emerald-200'}">
+                                        ${pedido.metodoPago.toUpperCase()}
+                                    </span>
+                                </h4>
+                            </div>
+
+                            <div class="flex items-center gap-2">
+                                <label class="text-[10px] font-bold text-slate-500 uppercase">Estado:</label>
+                                <select onchange="cambiarEstadoEnvio('${pedido.firestoreId}', this.value)" class="text-xs font-extrabold px-3 py-2 rounded-xl border ${estadoColores[pedido.estadoEnvio] || 'bg-white text-slate-700'} focus:outline-none cursor-pointer">
+                                    <option value="Pendiente" ${pedido.estadoEnvio === 'Pendiente' ? 'selected' : ''}>⏳ Pendiente</option>
+                                    <option value="En Preparación" ${pedido.estadoEnvio === 'En Preparación' ? 'selected' : ''}>📦 En Preparación</option>
+                                    <option value="En Camino" ${pedido.estadoEnvio === 'En Camino' ? 'selected' : ''}>🚚 En Camino</option>
+                                    <option value="Entregado" ${pedido.estadoEnvio === 'Entregado' ? 'selected' : ''}>✅ Entregado</option>
+                                    <option value="Cancelado" ${pedido.estadoEnvio === 'Cancelado' ? 'selected' : ''}>❌ Cancelado</option>
+                                </select>
+                                <button onclick="eliminarPedidoAdmin('${pedido.firestoreId}', '${pedido.cliente.nombre}')" class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition" title="Eliminar pedido">
+                                    <i class="fa-solid fa-trash-can text-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            
+                            <div class="flex items-center gap-3 bg-slate-50 p-3.5 rounded-2xl border border-slate-200/80">
+                                <img src="${pedido.zapato.imagen}" alt="${pedido.zapato.nombre}" class="w-16 h-16 object-cover rounded-xl border border-slate-200 shrink-0">
+                                <div class="min-w-0">
+                                    <span class="text-[10px] font-extrabold uppercase text-penky-orange">${pedido.zapato.marca}</span>
+                                    <h5 class="text-xs sm:text-sm font-extrabold text-penky-navy leading-tight truncate">${pedido.zapato.nombre}</h5>
+                                    <p class="text-xs text-slate-500 mt-1">Total Pedido: <strong class="text-penky-navy">${formatearCOP(pedido.valorTotal)}</strong></p>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200/80 flex flex-col justify-between">
+                                <div class="text-xs text-slate-600 space-y-0.5">
+                                    <p><strong class="text-penky-navy">📍 Dirección:</strong> ${pedido.cliente.direccion} (${pedido.cliente.ciudad})</p>
+                                    <p><strong class="text-penky-navy">👟 Marquilla:</strong> ${pedido.fotoMarquillaTexto}</p>
+                                </div>
+                                <div class="mt-2 pt-2 border-t border-slate-200 flex items-center justify-between">
+                                    <span class="text-xs font-bold text-slate-500"><i class="fa-solid fa-phone mr-1"></i> ${pedido.cliente.telefono}</span>
+                                    <a href="https://wa.me/57${pedido.cliente.telefono.replace(/\D/g,'')}?text=Hola%20${encodeURIComponent(pedido.cliente.nombre)},%20te%20escribimos%20de%20PENKY%20SHOP%20sobre%20tu%20pedido%20de%20los%20${encodeURIComponent(pedido.zapato.nombre)}" target="_blank" class="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs font-extrabold transition flex items-center gap-1.5 shadow-sm">
+                                        <i class="fa-brands fa-whatsapp text-sm"></i> Escribir al Cliente
+                                    </a>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                            
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs font-extrabold text-penky-navy uppercase">
+                                        <i class="fa-solid fa-credit-card text-penky-orange mr-1"></i> 
+                                        ${esCredito ? `Progreso: ${cuotasPagadasCount} de 3 cuotas pagadas (${Math.round((cuotasPagadasCount/3)*100)}%)` : 'Control de Pago de Contado'}
+                                    </span>
+                                </div>
+                                <span class="text-xs font-extrabold ${saldoPendiente === 0 ? 'text-emerald-600' : 'text-penky-orange'}">
+                                    ${saldoPendiente === 0 ? '¡PAGO COMPLETO! ✅' : `Saldo Pendiente: ${formatearCOP(saldoPendiente)}`}
+                                </span>
+                            </div>
+
+                            ${esCredito ? `
+                                <div class="w-full bg-slate-200 rounded-full h-2 mb-3 overflow-hidden">
+                                    <div class="bg-emerald-500 h-2 rounded-full transition-all duration-300" style="width: ${(cuotasPagadasCount/3)*100}%"></div>
+                                </div>
+
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                    ${pedido.cuotas.map(c => `
+                                        <button onclick="toggleCuotaCredito('${pedido.firestoreId}', ${c.numero})" class="p-3 rounded-xl border text-left transition flex items-center justify-between ${c.pagada ? 'bg-emerald-50 border-emerald-300 text-emerald-800' : 'bg-white border-slate-200 text-slate-600 hover:border-penky-orange'}">
+                                            <div>
+                                                <span class="block text-[10px] font-extrabold uppercase ${c.pagada ? 'text-emerald-600' : 'text-slate-400'}">Cuota ${c.numero} (Quincenal)</span>
+                                                <span class="block text-xs font-extrabold">${formatearCOP(pedido.valorCuota)}</span>
+                                                <span class="block text-[9px] ${c.pagada ? 'text-emerald-600 font-semibold' : 'text-slate-400'}">${c.pagada ? `✔ Pagada (${c.fechaPago})` : 'Toca para marcar pagada'}</span>
+                                            </div>
+                                            <div class="w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${c.pagada ? 'bg-emerald-500 text-white' : 'bg-slate-200 text-slate-400'}">
+                                                <i class="fa-solid ${c.pagada ? 'fa-check' : 'fa-clock'} text-xs"></i>
+                                            </div>
+                                        </button>
+                                    `).join('')}
+                                </div>
+                            ` : `
+                                <button onclick="togglePagoContado('${pedido.firestoreId}', ${!pedido.contadoPagado})" class="w-full p-3 rounded-xl border text-left transition flex items-center justify-between ${pedido.contadoPagado ? 'bg-emerald-50 border-emerald-300 text-emerald-800' : 'bg-white border-slate-200 text-slate-600 hover:border-penky-blue'}">
+                                    <div>
+                                        <span class="block text-[10px] font-extrabold uppercase ${pedido.contadoPagado ? 'text-emerald-600' : 'text-slate-400'}">Pago Único de Contado</span>
+                                        <span class="block text-xs font-extrabold">${formatearCOP(pedido.valorTotal)}</span>
+                                        <span class="block text-[9px] ${pedido.contadoPagado ? 'text-emerald-600 font-semibold' : 'text-slate-400'}">${pedido.contadoPagado ? '✔ Pago recibido con éxito' : 'Toca aquí para confirmar pago'}</span>
+                                    </div>
+                                    <div class="w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${pedido.contadoPagado ? 'bg-emerald-500 text-white' : 'bg-slate-200 text-slate-400'}">
+                                        <i class="fa-solid ${pedido.contadoPagado ? 'fa-check' : 'fa-clock'} text-xs"></i>
+                                    </div>
+                                </button>
+                            `}
+                        </div>
+
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function cambiarEstadoEnvio(firestoreId, nuevoEstado) {
+            try {
+                await db.collection("pedidos").doc(firestoreId).update({ estadoEnvio: nuevoEstado });
+            } catch (err) {
+                console.error("Error al actualizar estado de envío:", err);
+            }
+        }
+
+        async function toggleCuotaCredito(firestoreId, cuotaNumero) {
+            const pedido = listaPedidos.find(p => p.firestoreId === firestoreId);
+            if (pedido && pedido.cuotas) {
+                const nuevasCuotas = pedido.cuotas.map(c => {
+                    if (c.numero === cuotaNumero) {
+                        const nuevoEstado = !c.pagada;
+                        return {
+                            ...c,
+                            pagada: nuevoEstado,
+                            fechaPago: nuevoEstado ? new Date().toLocaleDateString('es-CO') : null
+                        };
+                    }
+                    return c;
+                });
+
+                try {
+                    await db.collection("pedidos").doc(firestoreId).update({ cuotas: nuevasCuotas });
+                } catch (err) {
+                    console.error("Error actualizando cuota en Firebase:", err);
+                }
+            }
+        }
+
+        async function togglePagoContado(firestoreId, nuevoEstado) {
+            try {
+                await db.collection("pedidos").doc(firestoreId).update({ contadoPagado: nuevoEstado });
+            } catch (err) {
+                console.error("Error actualizando pago de contado en Firebase:", err);
+            }
+        }
+
+        async function eliminarPedidoAdmin(firestoreId, nombreCliente) {
+            if (confirm(`¿Deseas archivar o eliminar el pedido de ${nombreCliente}?`)) {
+                try {
+                    await db.collection("pedidos").doc(firestoreId).delete();
+                } catch (err) {
+                    console.error("Error eliminando pedido en Firebase:", err);
+                }
+            }
+        }
+
+        // Inicialización
+        navegarA('nosotros');
     </script>
 </body>
 </html>
